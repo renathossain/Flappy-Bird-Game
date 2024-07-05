@@ -1,46 +1,44 @@
 <script lang="ts">
   import { Stage, Layer, Rect, Circle } from "svelte-konva";
+  import { onMount } from "svelte";
 
-  // Bird variables
-  let birdX = 50;
-  let birdY = window.innerHeight / 2;
-  let birdRadius = 20;
-  let birdColor = "#f7f74c";
-  let gravity = 0.1;
-  let jumpStrength = -2;
-  let birdSpeed = 0;
+  const defaultFlappy = {
+    x: 50,
+    y: window.innerHeight / 2,
+    radius: 20,
+    fill: "#f7f74c",
+  };
 
-  // Pipe variables
-  let pipeWidth = 50;
-  let pipeGap = 150;
-  let pipeDistance = 300;
+  const stageProp = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
+
+  const backgroundProp = {
+    x: 0,
+    y: 0,
+    width: window.innerWidth,
+    height: window.innerHeight,
+    fill: "#70c5ce",
+  };
+
+  let flappyBird = defaultFlappy;
+
   let pipes = [];
 
-  // Game variables
-  let score = 0;
-  let gameOver = false;
+  function gameLoop() {
+    flappyBird.x += 1;
+    requestAnimationFrame(gameLoop);
+  }
+
+  onMount(() => {
+    gameLoop();
+  });
 </script>
 
-<Stage config={{ width: window.innerWidth, height: window.innerHeight }}>
+<Stage config={stageProp}>
   <Layer>
-    <Rect
-      config={{
-        x: 0,
-        y: 0,
-        width: window.innerWidth,
-        height: window.innerHeight,
-        fill: "#70c5ce",
-      }}
-    />
-  </Layer>
-  <Layer>
-    <Circle
-      config={{
-        x: birdX,
-        y: birdY,
-        radius: birdRadius,
-        fill: birdColor,
-      }}
-    />
+    <Rect config={backgroundProp} />
+    <Circle config={flappyBird} />
   </Layer>
 </Stage>
