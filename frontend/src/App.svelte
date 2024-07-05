@@ -1,20 +1,15 @@
 <script lang="ts">
-  import { Stage, Layer, Rect, Circle } from "svelte-konva";
+  import Konva from "konva";
   import { onMount } from "svelte";
 
-  const defaultFlappy = {
-    x: 50,
-    y: window.innerHeight / 2,
-    radius: 20,
-    fill: "#f7f74c",
-  };
-
-  const stageProp = {
+  const StageConfig = {
+    container: "container",
     width: window.innerWidth,
     height: window.innerHeight,
+    draggable: true,
   };
 
-  const backgroundProp = {
+  const backgroundConfig = {
     x: 0,
     y: 0,
     width: window.innerWidth,
@@ -22,23 +17,30 @@
     fill: "#70c5ce",
   };
 
-  let flappyBird = defaultFlappy;
+  const defaultFlappyConfig = {
+    x: 50,
+    y: window.innerHeight / 2,
+    radius: 20,
+    fill: "#f7f74c",
+  };
+
+  let flappyConfig = defaultFlappyConfig;
 
   let pipes = [];
 
-  function gameLoop() {
-    flappyBird.x += 1;
-    requestAnimationFrame(gameLoop);
-  }
-
   onMount(() => {
-    gameLoop();
+    const stage = new Konva.Stage(StageConfig);
+    const layer = new Konva.Layer();
+    const background = new Konva.Rect(backgroundConfig);
+    const flappy = new Konva.Circle(flappyConfig);
+    layer.add(background);
+    layer.add(flappy);
+    stage.add(layer);
+    const anim = new Konva.Animation(function (frame) {
+      flappy.move({ x: 2, y: 0 });
+    }, flappy.getLayer());
+    anim.start();
   });
 </script>
 
-<Stage config={stageProp}>
-  <Layer>
-    <Rect config={backgroundProp} />
-    <Circle config={flappyBird} />
-  </Layer>
-</Stage>
+<div id="container"></div>
