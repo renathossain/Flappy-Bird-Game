@@ -10,7 +10,8 @@
   const flappyColor = "#f7f74c";
   const pipeWidth = 50;
   const pipeVerticalGap = 150;
-  const pipeSpeed = 2;
+  const pipeMovementSpeed = 2;
+  const pipeHorizontalGap = 300;
 
   // Default Data Structures
   const StageConfig = {
@@ -37,35 +38,32 @@
 
   // Data that changes during game
   let flappyConfig = defaultFlappyConfig;
-  let needNewPipes = true;
   let pipePairs: { upperPipe: Rect; lowerPipe: Rect }[] = [];
 
   // Generate Upper and Lower Pipe Pair
   function generatePipePair() {
-    if (needNewPipes) {
-      const upperPipeHeight = Math.floor(
-        Math.random() * (window.innerHeight - pipeVerticalGap),
-      );
-      const UpperPipeConfig = {
-        x: window.innerWidth,
-        y: 0,
-        width: pipeWidth,
-        height: upperPipeHeight,
-        fill: "#4caf50",
-      };
-      const lowerPipeVertOffset = upperPipeHeight + pipeVerticalGap;
-      const LowerPipeConfig = {
-        x: window.innerWidth,
-        y: lowerPipeVertOffset,
-        width: pipeWidth,
-        height: window.innerHeight - lowerPipeVertOffset,
-        fill: "#4caf50",
-      };
-      pipePairs.push({
-        upperPipe: new Konva.Rect(UpperPipeConfig),
-        lowerPipe: new Konva.Rect(LowerPipeConfig),
-      });
-    }
+    const upperPipeHeight = Math.floor(
+      Math.random() * (window.innerHeight - pipeVerticalGap),
+    );
+    const UpperPipeConfig = {
+      x: window.innerWidth,
+      y: 0,
+      width: pipeWidth,
+      height: upperPipeHeight,
+      fill: "#4caf50",
+    };
+    const lowerPipeVertOffset = upperPipeHeight + pipeVerticalGap;
+    const LowerPipeConfig = {
+      x: window.innerWidth,
+      y: lowerPipeVertOffset,
+      width: pipeWidth,
+      height: window.innerHeight - lowerPipeVertOffset,
+      fill: "#4caf50",
+    };
+    const upperPipe = new Konva.Rect(UpperPipeConfig);
+    const lowerPipe = new Konva.Rect(LowerPipeConfig);
+    pipePairs.push({ upperPipe, lowerPipe });
+    return { upperPipe, lowerPipe };
   }
 
   onMount(() => {
@@ -80,22 +78,38 @@
     layer.add(background);
     layer.add(flappy);
 
-    // Generate Pipes
-    generatePipePair();
+    // Initial pipe generation
+    let { upperPipe, lowerPipe } = generatePipePair();
+    layer.add(upperPipe);
+    layer.add(lowerPipe);
 
     // Move Pipes
-    pipePairs.forEach((pair) => {
-      layer.add(pair.upperPipe);
-      layer.add(pair.lowerPipe);
-      const anim = new Konva.Animation(
-        function () {
-          pair.upperPipe.move({ x: -pipeSpeed, y: 0 });
-          pair.lowerPipe.move({ x: -pipeSpeed, y: 0 });
-        },
-        [pair.upperPipe.getLayer(), pair.lowerPipe.getLayer()],
-      );
-      anim.start();
-    });
+    const anim = new Konva.Animation(function (frame) {
+      pipePairs.forEach((pair) => {
+        pair.upperPipe.move({ x: -pipeMovementSpeed, y: 0 });
+        pair.lowerPipe.move({ x: -pipeMovementSpeed, y: 0 });
+
+        // Remove pipes that are off-screen
+        if (pair.upperPipe.x() + pipeWidth < 0) {
+          pair.upperPipe.destroy();
+          pair.lowerPipe.destroy();
+          pipePairs.shift();
+        }
+      });
+
+      // Generate new pipes every `pipeHorizontalGap`
+      const lastPipePair = pipePairs[pipePairs.length - 1];
+      if (lastPipePair.upperPipe.x() <= window.innerWidth - pipeHorizontalGap) {
+        let { upperPipe, lowerPipe } = generatePipePair();
+        layer.add(upperPipe);
+        layer.add(lowerPipe);
+      }
+    }, layer);
+    anim.start();
+
+    return () => {
+      anim.stop();
+    };
   });
 </script>
 
