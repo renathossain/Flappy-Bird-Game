@@ -37,7 +37,6 @@
   };
 
   // Data that changes during game
-  let gameRunning = false;
   let flappyConfig = defaultFlappyConfig;
   let pipePairs: { upperPipe: Konva.Rect; lowerPipe: Konva.Rect }[] = [];
 
@@ -113,6 +112,10 @@
       // Start game when spacebar is pressed
       if (event.key === " ") {
         anim.start();
+      }
+      // Pause game when Escape is pressed
+      if (event.key === "Escape") {
+        anim.stop();
       }
     });
 
