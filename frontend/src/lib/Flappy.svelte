@@ -38,6 +38,24 @@
     fill: flappyColor,
   };
 
+  const scoreTextConfig = {
+    x: 10,
+    y: 10,
+    text: "Score: 0",
+    fontSize: 20,
+    fontFamily: "Arial",
+    fill: "#000",
+  };
+
+  const topTextConfig = {
+    x: window.innerWidth / 2 - 80,
+    y: window.innerHeight / 2,
+    text: "",
+    fontSize: 30,
+    fontFamily: "Arial",
+    fill: "#000",
+  };
+
   // Data that changes during game
   let gameRunning = false;
   let gameOver = false;
@@ -91,22 +109,18 @@
     // Stage Initialization
     const stage = new Konva.Stage(StageConfig);
     const layer = new Konva.Layer();
+    const layerTop = new Konva.Layer();
     stage.add(layer);
+    stage.add(layerTop);
 
     // Add Background, Flappy and Score
     const background = new Konva.Rect(backgroundConfig);
     const flappy = new Konva.Circle(flappyConfig);
+    const scoreText = new Konva.Text(scoreTextConfig);
+    const topText = new Konva.Text(topTextConfig);
     layer.add(background);
     layer.add(flappy);
-    const scoreText = new Konva.Text({
-      x: 10,
-      y: 10,
-      text: "Score: 0",
-      fontSize: 20,
-      fontFamily: "Arial",
-      fill: "#000",
-    });
-    layer.add(scoreText);
+    layerTop.add(scoreText);
 
     // Initial pipe generation
     let { upperPipe, lowerPipe } = generatePipePair();
@@ -119,6 +133,8 @@
         gameOver = true;
         gameRunning = false;
         anim.stop();
+        topText.text("Game Over");
+        layerTop.add(topText);
       }
 
       // If flappy hits the ground or ceiling, gameover
@@ -148,6 +164,7 @@
           pair.lowerPipe.destroy();
           pipePairs.shift();
           score++;
+          scoreText.text(`Score: ${score}`);
         }
       });
 
@@ -179,6 +196,7 @@
         if (!gameRunning && !gameOver) {
           // Start game when spacebar is pressed
           gameRunning = true;
+          topText.remove();
           anim.start();
         } else if (gameRunning && !gameOver) {
           // Make Flappy Jump when Spacebar pressed
@@ -190,6 +208,8 @@
         if (gameRunning && !gameOver) {
           gameRunning = false;
           anim.stop();
+          topText.text("Paused");
+          layerTop.add(topText);
         }
       }
     });
