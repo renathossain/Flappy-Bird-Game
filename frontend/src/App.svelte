@@ -1,7 +1,6 @@
 <script lang="ts">
   import Konva from "konva";
-  import type { Rect } from "konva/lib/shapes/Rect";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
 
   // Changeable Constants
   const backgroundColor = "#70c5ce";
@@ -12,6 +11,7 @@
   const pipeVerticalGap = 150;
   const pipeMovementSpeed = 2;
   const pipeHorizontalGap = 300;
+  const pipeColor = "#4caf50";
 
   // Default Data Structures
   const StageConfig = {
@@ -37,8 +37,9 @@
   };
 
   // Data that changes during game
+  let gameRunning = false;
   let flappyConfig = defaultFlappyConfig;
-  let pipePairs: { upperPipe: Rect; lowerPipe: Rect }[] = [];
+  let pipePairs: { upperPipe: Konva.Rect; lowerPipe: Konva.Rect }[] = [];
 
   // Generate Upper and Lower Pipe Pair
   function generatePipePair() {
@@ -50,7 +51,7 @@
       y: 0,
       width: pipeWidth,
       height: upperPipeHeight,
-      fill: "#4caf50",
+      fill: pipeColor,
     };
     const lowerPipeVertOffset = upperPipeHeight + pipeVerticalGap;
     const LowerPipeConfig = {
@@ -58,7 +59,7 @@
       y: lowerPipeVertOffset,
       width: pipeWidth,
       height: window.innerHeight - lowerPipeVertOffset,
-      fill: "#4caf50",
+      fill: pipeColor,
     };
     const upperPipe = new Konva.Rect(UpperPipeConfig);
     const lowerPipe = new Konva.Rect(LowerPipeConfig);
@@ -83,9 +84,10 @@
     layer.add(upperPipe);
     layer.add(lowerPipe);
 
-    // Move Pipes
-    const anim = new Konva.Animation(function (frame) {
+    // Create Animation
+    const anim = new Konva.Animation(() => {
       pipePairs.forEach((pair) => {
+        // Move existing pipes
         pair.upperPipe.move({ x: -pipeMovementSpeed, y: 0 });
         pair.lowerPipe.move({ x: -pipeMovementSpeed, y: 0 });
 
@@ -105,11 +107,20 @@
         layer.add(lowerPipe);
       }
     }, layer);
-    anim.start();
 
-    return () => {
-      anim.stop();
-    };
+    // Handle spacebar events
+    window.addEventListener("keydown", (event) => {
+      // Start game when spacebar is pressed
+      if (event.key === " ") {
+        anim.start();
+      }
+    });
+
+    onDestroy(() => {
+      if (anim) {
+        anim.stop();
+      }
+    });
   });
 </script>
 
