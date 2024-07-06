@@ -4,7 +4,7 @@
 
   // Changeable Constants
   const backgroundColor = "#70c5ce";
-  const flappyRightOffset = 50;
+  const flappyRightOffset = 200;
   const flappyRadius = 20;
   const flappyColor = "#f7f74c";
   const flappyJumpHeight = -4;
@@ -48,9 +48,9 @@
   };
 
   const topTextConfig = {
-    x: window.innerWidth / 2 - 80,
+    x: window.innerWidth / 2 - 100,
     y: window.innerHeight / 2,
-    text: "",
+    text: "Press Space to Start",
     fontSize: 30,
     fontFamily: "Arial",
     fill: "#000",
@@ -61,7 +61,11 @@
   let gameOver = false;
   let score = 0;
   let flappyVelocity = 0;
-  let pipePairs: { upperPipe: Konva.Rect; lowerPipe: Konva.Rect }[] = [];
+  let pipePairs: {
+    upperPipe: Konva.Rect;
+    lowerPipe: Konva.Rect;
+    passed: boolean;
+  }[] = [];
 
   // Generate Upper and Lower Pipe Pair
   function generatePipePair() {
@@ -89,8 +93,8 @@
 
     const upperPipe = new Konva.Rect(UpperPipeConfig);
     const lowerPipe = new Konva.Rect(LowerPipeConfig);
-    pipePairs.push({ upperPipe, lowerPipe });
-    return { upperPipe, lowerPipe };
+    pipePairs.push({ upperPipe, lowerPipe, passed: false });
+    return { upperPipe, lowerPipe, passed: false };
   }
 
   // Check Collision between 2 sprites
@@ -113,7 +117,7 @@
     stage.add(layer);
     stage.add(layerTop);
 
-    // Add Background, Flappy and Score
+    // Add Background, Flappy and Text Sprites
     const background = new Konva.Rect(backgroundConfig);
     const flappy = new Konva.Circle(flappyConfig);
     const scoreText = new Konva.Text(scoreTextConfig);
@@ -121,6 +125,7 @@
     layer.add(background);
     layer.add(flappy);
     layerTop.add(scoreText);
+    layerTop.add(topText);
 
     // Initial pipe generation
     let { upperPipe, lowerPipe } = generatePipePair();
@@ -158,13 +163,21 @@
         pair.upperPipe.move({ x: -pipeMovementSpeed, y: 0 });
         pair.lowerPipe.move({ x: -pipeMovementSpeed, y: 0 });
 
+        // Update score once flappy passes
+        if (
+          pair.upperPipe.x() + pipeWidth < flappyRightOffset &&
+          !pair.passed
+        ) {
+          pair.passed = true;
+          score++;
+          scoreText.text(`Score: ${score}`);
+        }
+
         // Remove pipes that are off-screen
         if (pair.upperPipe.x() + pipeWidth < 0) {
           pair.upperPipe.destroy();
           pair.lowerPipe.destroy();
           pipePairs.shift();
-          score++;
-          scoreText.text(`Score: ${score}`);
         }
       });
 
