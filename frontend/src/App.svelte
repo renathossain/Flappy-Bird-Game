@@ -7,10 +7,12 @@
   const flappyRightOffset = 50;
   const flappyRadius = 20;
   const flappyColor = "#f7f74c";
-  const pipeWidth = 50;
-  const pipeVerticalGap = 150;
+  const flappyJumpHeight = -4;
+  const flappyGravity = 0.3;
+  const pipeWidth = window.innerHeight / 16;
+  const pipeVerticalGap = window.innerHeight / 4;
   const pipeMovementSpeed = 2;
-  const pipeHorizontalGap = 300;
+  const pipeHorizontalGap = window.innerWidth / 4;
   const pipeColor = "#4caf50";
 
   // Default Data Structures
@@ -37,7 +39,9 @@
   };
 
   // Data that changes during game
+  let gameRunning = false;
   let flappyConfig = defaultFlappyConfig;
+  let flappyVelocity = 0;
   let pipePairs: { upperPipe: Konva.Rect; lowerPipe: Konva.Rect }[] = [];
 
   // Generate Upper and Lower Pipe Pair
@@ -45,6 +49,7 @@
     const upperPipeHeight = Math.floor(
       Math.random() * (window.innerHeight - pipeVerticalGap),
     );
+
     const UpperPipeConfig = {
       x: window.innerWidth,
       y: 0,
@@ -52,7 +57,9 @@
       height: upperPipeHeight,
       fill: pipeColor,
     };
+
     const lowerPipeVertOffset = upperPipeHeight + pipeVerticalGap;
+
     const LowerPipeConfig = {
       x: window.innerWidth,
       y: lowerPipeVertOffset,
@@ -60,6 +67,7 @@
       height: window.innerHeight - lowerPipeVertOffset,
       fill: pipeColor,
     };
+
     const upperPipe = new Konva.Rect(UpperPipeConfig);
     const lowerPipe = new Konva.Rect(LowerPipeConfig);
     pipePairs.push({ upperPipe, lowerPipe });
@@ -105,17 +113,29 @@
         layer.add(upperPipe);
         layer.add(lowerPipe);
       }
+
+      // Animate Flappy
+      flappy.move({ x: 0, y: flappyVelocity });
+      flappyVelocity += flappyGravity;
     }, layer);
 
     // Handle spacebar events
     window.addEventListener("keydown", (event) => {
       // Start game when spacebar is pressed
       if (event.key === " ") {
-        anim.start();
+        if (!gameRunning) {
+          gameRunning = true;
+          anim.start();
+        } else {
+          flappyVelocity = flappyJumpHeight;
+        }
       }
       // Pause game when Escape is pressed
       if (event.key === "Escape") {
-        anim.stop();
+        if (gameRunning) {
+          gameRunning = false;
+          anim.stop();
+        }
       }
     });
 
