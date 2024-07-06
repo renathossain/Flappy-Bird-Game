@@ -1,9 +1,5 @@
-<script lang="ts">
+<script>
+  import Flappy from "./lib/Flappy.svelte";
 </script>
 
-<main>
-  <div>Hello World!</div>
-</main>
-
-<style>
-</style>
+<Flappy />
