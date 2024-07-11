@@ -3,16 +3,18 @@
   import { onMount, onDestroy } from "svelte";
 
   // Changeable Constants
-  const backgroundColor = "#70c5ce";
-  const flappyRightOffset = 200;
-  const flappyRadius = 20;
-  const flappyColor = "#f7f74c";
-  const flappyJumpHeight = -4;
-  const flappyGravity = 0.3;
+  const flappyRightOffset = window.innerHeight / 10;
+  const flappyWidth = 34 * (window.innerHeight / 400);
+  const flappyHeight = 24 * (window.innerHeight / 400);
+  const flappyImgSource = "src/assets/redbird-midflap.png";
+  const flappyJumpHeight = -window.innerHeight / 140;
+  const flappyGravity = window.innerHeight / 3000;
   const pipeWidth = window.innerHeight / 16;
   const pipeVerticalGap = window.innerHeight / 4;
-  const pipeMovementSpeed = 2;
-  const pipeHorizontalGap = window.innerWidth / 4;
+  const pipeMovementSpeed = window.innerHeight / 250;
+  const pipeHorizontalGap = window.innerHeight / 2;
+  const pipeUpperImgSource = "src/assets/pipe-green-upper.png";
+  const pipeLowerImgSource = "src/assets/pipe-green-lower.png";
   const pipeColor = "#4caf50";
 
   // Default Data Structures
@@ -20,29 +22,31 @@
     container: "container",
     width: window.innerWidth,
     height: window.innerHeight,
-    draggable: true,
+    draggable: false,
   };
 
-  const backgroundConfig = {
-    x: 0,
-    y: 0,
-    width: window.innerWidth,
-    height: window.innerHeight,
-    fill: backgroundColor,
-  };
+  const flappyImgObj = new Image();
+  flappyImgObj.src = flappyImgSource;
 
   const flappyConfig = {
     x: flappyRightOffset,
     y: window.innerHeight / 2,
-    radius: flappyRadius,
-    fill: flappyColor,
+    image: flappyImgObj,
+    width: flappyWidth,
+    height: flappyHeight,
   };
+
+  const pipeUpperImgObj = new Image();
+  pipeUpperImgObj.src = pipeUpperImgSource;
+
+  const pipeLowerImgObj = new Image();
+  pipeLowerImgObj.src = pipeLowerImgSource;
 
   const scoreTextConfig = {
     x: 10,
     y: 10,
     text: "Score: 0",
-    fontSize: 20,
+    fontSize: 30,
     fontFamily: "Arial",
     fill: "#000",
   };
@@ -51,7 +55,7 @@
     x: window.innerWidth / 2 - 100,
     y: window.innerHeight / 2,
     text: "Press Space to Start",
-    fontSize: 30,
+    fontSize: 40,
     fontFamily: "Arial",
     fill: "#000",
   };
@@ -76,9 +80,9 @@
     const UpperPipeConfig = {
       x: window.innerWidth,
       y: 0,
+      image: pipeUpperImgObj,
       width: pipeWidth,
       height: upperPipeHeight,
-      fill: pipeColor,
     };
 
     const lowerPipeVertOffset = upperPipeHeight + pipeVerticalGap;
@@ -86,13 +90,13 @@
     const LowerPipeConfig = {
       x: window.innerWidth,
       y: lowerPipeVertOffset,
+      image: pipeLowerImgObj,
       width: pipeWidth,
       height: window.innerHeight - lowerPipeVertOffset,
-      fill: pipeColor,
     };
 
-    const upperPipe = new Konva.Rect(UpperPipeConfig);
-    const lowerPipe = new Konva.Rect(LowerPipeConfig);
+    const upperPipe = new Konva.Image(UpperPipeConfig);
+    const lowerPipe = new Konva.Image(LowerPipeConfig);
     pipePairs.push({ upperPipe, lowerPipe, passed: false });
     return { upperPipe, lowerPipe, passed: false };
   }
@@ -117,13 +121,13 @@
     stage.add(layer);
     stage.add(layerTop);
 
-    // Add Background, Flappy and Text Sprites
-    const background = new Konva.Rect(backgroundConfig);
-    const flappy = new Konva.Circle(flappyConfig);
+    // Add Flappy and Text Sprites
+    const flappy = new Konva.Image(flappyConfig);
     const scoreText = new Konva.Text(scoreTextConfig);
     const topText = new Konva.Text(topTextConfig);
-    layer.add(background);
-    layer.add(flappy);
+    flappyImgObj.onload = () => {
+      layer.add(flappy);
+    };
     layerTop.add(scoreText);
     layerTop.add(topText);
 
@@ -144,8 +148,8 @@
 
       // If flappy hits the ground or ceiling, gameover
       if (
-        flappy.y() + flappy.radius() === window.innerHeight ||
-        flappy.y() - flappy.radius() === 0
+        flappy.y() + flappy.height() === window.innerHeight || // ground
+        flappy.y() === 0 // ceiling
       ) {
         stopGame();
       }
@@ -195,9 +199,9 @@
         y: Math.max(
           Math.min(
             flappy.y() + flappyVelocity, // in between ground and ceiling
-            window.innerHeight - flappy.radius(), // ground
+            window.innerHeight - flappy.height(), // ground
           ),
-          flappy.radius(), // ceiling
+          0, // ceiling
         ),
       });
       flappyVelocity += flappyGravity;
@@ -236,3 +240,13 @@
 </script>
 
 <div id="container"></div>
+
+<style>
+  #container {
+    height: 100vh;
+    width: 100vw;
+    background-image: url("src/assets/background-day.png");
+    background-repeat: repeat-x;
+    background-size: contain;
+  }
+</style>
