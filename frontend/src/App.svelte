@@ -1,5 +1,6 @@
 <script>
-  import Flappy from "./lib/Flappy.svelte";
+  import LandingPage from "./lib/LandingPage.svelte";
 </script>
 
-<Flappy />
+<link rel="stylesheet" href="node_modules/svelte-material-ui/bare.css" />
+<LandingPage />
