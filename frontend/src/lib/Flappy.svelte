@@ -13,6 +13,8 @@
   const pipeVerticalGap = window.innerHeight / 4;
   const pipeMovementSpeed = window.innerHeight / 250;
   const pipeHorizontalGap = window.innerHeight / 2;
+  const pipeUpperImgSource = "src/assets/pipe-green-upper.png";
+  const pipeLowerImgSource = "src/assets/pipe-green-lower.png";
   const pipeColor = "#4caf50";
 
   // Default Data Structures
@@ -20,7 +22,7 @@
     container: "container",
     width: window.innerWidth,
     height: window.innerHeight,
-    draggable: true,
+    draggable: false,
   };
 
   const flappyImgObj = new Image();
@@ -34,11 +36,17 @@
     height: flappyHeight,
   };
 
+  const pipeUpperImgObj = new Image();
+  pipeUpperImgObj.src = pipeUpperImgSource;
+
+  const pipeLowerImgObj = new Image();
+  pipeLowerImgObj.src = pipeLowerImgSource;
+
   const scoreTextConfig = {
     x: 10,
     y: 10,
     text: "Score: 0",
-    fontSize: 20,
+    fontSize: 30,
     fontFamily: "Arial",
     fill: "#000",
   };
@@ -47,7 +55,7 @@
     x: window.innerWidth / 2 - 100,
     y: window.innerHeight / 2,
     text: "Press Space to Start",
-    fontSize: 30,
+    fontSize: 40,
     fontFamily: "Arial",
     fill: "#000",
   };
@@ -72,9 +80,9 @@
     const UpperPipeConfig = {
       x: window.innerWidth,
       y: 0,
+      image: pipeUpperImgObj,
       width: pipeWidth,
       height: upperPipeHeight,
-      fill: pipeColor,
     };
 
     const lowerPipeVertOffset = upperPipeHeight + pipeVerticalGap;
@@ -82,13 +90,13 @@
     const LowerPipeConfig = {
       x: window.innerWidth,
       y: lowerPipeVertOffset,
+      image: pipeLowerImgObj,
       width: pipeWidth,
       height: window.innerHeight - lowerPipeVertOffset,
-      fill: pipeColor,
     };
 
-    const upperPipe = new Konva.Rect(UpperPipeConfig);
-    const lowerPipe = new Konva.Rect(LowerPipeConfig);
+    const upperPipe = new Konva.Image(UpperPipeConfig);
+    const lowerPipe = new Konva.Image(LowerPipeConfig);
     pipePairs.push({ upperPipe, lowerPipe, passed: false });
     return { upperPipe, lowerPipe, passed: false };
   }
