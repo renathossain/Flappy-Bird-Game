@@ -165,6 +165,7 @@
 
     // Create Animation
     const anim = new Konva.Animation(() => {
+      // Function to stop the game
       function stopGame() {
         gameOver = true;
         gameRunning = false;
@@ -175,28 +176,38 @@
 
       // Animate Flappy
       function animateFlappy(flappy: FlappyObject) {
+        // Calculate boundaries
         const ground = window.innerHeight - flappy.imageKonva.height();
         const ceiling = 0;
-        const middle = flappy.imageKonva.y() + flappy.downVelocity;
+
+        // If flappy hits boundary, its out
         if (
           flappy.imageKonva.y() >= ground ||
           flappy.imageKonva.y() <= ceiling
         ) {
           flappy.playing = false;
         }
+
         if (flappy.playing) {
+          // If flappy is in play, calculate new Y
+          const newY = flappy.imageKonva.y() + flappy.downVelocity;
           flappy.imageKonva.position({
             x: flappy.imageKonva.x(),
-            y: Math.max(Math.min(middle, ground), ceiling),
+            y: Math.max(Math.min(newY, ground), ceiling),
           });
         } else {
+          // If flappy is out and the last one, stop the game
           if (flappies.length === 1) {
             stopGame();
           }
+
+          // If flappy is out and not last, it gets sweeped out
           flappy.imageKonva.position({
             x: flappy.imageKonva.x() - pipeMovementSpeed,
             y: flappy.imageKonva.y(),
           });
+
+          // Remove flappies that are off-screen
           if (flappy.imageKonva.x() + flappy.imageKonva.width() < 0) {
             const flappyIndex = flappies.indexOf(flappy);
             if (flappyIndex !== -1) {
@@ -208,12 +219,13 @@
         flappy.downVelocity += flappyGravity;
       }
 
+      // Animate all flappies
       flappies.forEach((flappy) => {
         animateFlappy(flappy);
       });
 
       pipePairs.forEach((pair) => {
-        // If flappy collides with a pipe, gamover
+        // If flappy collides with a pipe, it loses
         function pipeCollisionCheck(flappy: FlappyObject) {
           if (
             isCollision(flappy.imageKonva, pair.upperPipe) ||
