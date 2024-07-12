@@ -5,4 +5,4 @@ Frontend Svelte Project Install Dependencies:
   - `npm install`
   - `npm i svelte-konva konva`
 Frontend Svelte Run Project:
-  - `npm run dev -- --open`
+  - `npm run dev`

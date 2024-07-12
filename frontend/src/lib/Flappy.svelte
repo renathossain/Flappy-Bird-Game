@@ -2,45 +2,68 @@
   import Konva from "konva";
   import { onMount, onDestroy } from "svelte";
 
-  // Changeable Constants
+  // Magic Constants
   const flappyRightOffset = window.innerHeight / 10;
   const flappyWidth = 34 * (window.innerHeight / 400);
   const flappyHeight = 24 * (window.innerHeight / 400);
-  const flappyImgSource = "src/assets/redbird-midflap.png";
   const flappyJumpHeight = -window.innerHeight / 140;
   const flappyGravity = window.innerHeight / 3000;
   const pipeWidth = window.innerHeight / 16;
   const pipeVerticalGap = window.innerHeight / 4;
   const pipeMovementSpeed = window.innerHeight / 250;
   const pipeHorizontalGap = window.innerHeight / 2;
-  const pipeUpperImgSource = "src/assets/pipe-green-upper.png";
-  const pipeLowerImgSource = "src/assets/pipe-green-lower.png";
-  const pipeColor = "#4caf50";
 
-  // Default Data Structures
+  // Flappies Constants
+  const noOfFlappies = 2;
+  const flappyImgSources = [
+    "src/assets/redbird-midflap.png",
+    "src/assets/yellowbird-midflap.png",
+    "src/assets/bluebird-midflap.png",
+  ];
+  const flappyImgObjs = flappyImgSources.map((src) => {
+    const imgObj = new Image();
+    imgObj.src = src;
+    return imgObj;
+  });
+  const jumpKeyBinds = [" ", "o", "p"];
+
+  // Flappies Data Structure
+  type FlappyObject = {
+    imageKonva: Konva.Image;
+    imageObj: HTMLImageElement;
+    downVelocity: number;
+    playing: boolean;
+    jumpKeyBind: string;
+  };
+
+  const flappies = flappyImgObjs.slice(0, noOfFlappies).map((imgObj, index) => {
+    const imageKonva = new Konva.Image({
+      x: flappyRightOffset,
+      y: window.innerHeight / 2,
+      image: imgObj,
+      width: flappyWidth,
+      height: flappyHeight,
+    });
+    return {
+      imageKonva: imageKonva,
+      imageObj: imgObj,
+      downVelocity: 0,
+      playing: true,
+      jumpKeyBind: jumpKeyBinds[index],
+    };
+  });
+
+  // Stage and Game Text
+  let gameRunning = false;
+  let gameOver = false;
+  let score = 0;
+
   const StageConfig = {
     container: "container",
     width: window.innerWidth,
     height: window.innerHeight,
     draggable: false,
   };
-
-  const flappyImgObj = new Image();
-  flappyImgObj.src = flappyImgSource;
-
-  const flappyConfig = {
-    x: flappyRightOffset,
-    y: window.innerHeight / 2,
-    image: flappyImgObj,
-    width: flappyWidth,
-    height: flappyHeight,
-  };
-
-  const pipeUpperImgObj = new Image();
-  pipeUpperImgObj.src = pipeUpperImgSource;
-
-  const pipeLowerImgObj = new Image();
-  pipeLowerImgObj.src = pipeLowerImgSource;
 
   const scoreTextConfig = {
     x: 10,
@@ -60,11 +83,13 @@
     fill: "#000",
   };
 
-  // Data that changes during game
-  let gameRunning = false;
-  let gameOver = false;
-  let score = 0;
-  let flappyVelocity = 0;
+  // Pipe Data Structures
+  const pipeUpperImgObj = new Image();
+  pipeUpperImgObj.src = "src/assets/pipe-green-upper.png";
+
+  const pipeLowerImgObj = new Image();
+  pipeLowerImgObj.src = "src/assets/pipe-green-lower.png";
+
   let pipePairs: {
     upperPipe: Konva.Rect;
     lowerPipe: Konva.Rect;
@@ -97,6 +122,7 @@
 
     const upperPipe = new Konva.Image(UpperPipeConfig);
     const lowerPipe = new Konva.Image(LowerPipeConfig);
+
     pipePairs.push({ upperPipe, lowerPipe, passed: false });
     return { upperPipe, lowerPipe, passed: false };
   }
@@ -122,12 +148,13 @@
     stage.add(layerTop);
 
     // Add Flappy and Text Sprites
-    const flappy = new Konva.Image(flappyConfig);
     const scoreText = new Konva.Text(scoreTextConfig);
     const topText = new Konva.Text(topTextConfig);
-    flappyImgObj.onload = () => {
-      layer.add(flappy);
-    };
+    flappies.forEach((flappy) => {
+      flappy.imageObj.onload = () => {
+        layer.add(flappy.imageKonva);
+      };
+    });
     layerTop.add(scoreText);
     layerTop.add(topText);
 
@@ -146,22 +173,60 @@
         layerTop.add(topText);
       }
 
-      // If flappy hits the ground or ceiling, gameover
-      if (
-        flappy.y() + flappy.height() === window.innerHeight || // ground
-        flappy.y() === 0 // ceiling
-      ) {
-        stopGame();
+      // Animate Flappy
+      function animateFlappy(flappy: FlappyObject) {
+        const ground = window.innerHeight - flappy.imageKonva.height();
+        const ceiling = 0;
+        const middle = flappy.imageKonva.y() + flappy.downVelocity;
+        if (
+          flappy.imageKonva.y() >= ground ||
+          flappy.imageKonva.y() <= ceiling
+        ) {
+          flappy.playing = false;
+        }
+        if (flappy.playing) {
+          flappy.imageKonva.position({
+            x: flappy.imageKonva.x(),
+            y: Math.max(Math.min(middle, ground), ceiling),
+          });
+        } else {
+          if (flappies.length === 1) {
+            stopGame();
+          }
+          flappy.imageKonva.position({
+            x: flappy.imageKonva.x() - pipeMovementSpeed,
+            y: flappy.imageKonva.y(),
+          });
+          if (flappy.imageKonva.x() + flappy.imageKonva.width() < 0) {
+            const flappyIndex = flappies.indexOf(flappy);
+            if (flappyIndex !== -1) {
+              flappies.splice(flappyIndex, 1);
+            }
+            flappy.imageKonva.destroy();
+          }
+        }
+        flappy.downVelocity += flappyGravity;
       }
+
+      flappies.forEach((flappy) => {
+        animateFlappy(flappy);
+      });
 
       pipePairs.forEach((pair) => {
         // If flappy collides with a pipe, gamover
-        if (
-          isCollision(flappy, pair.upperPipe) ||
-          isCollision(flappy, pair.lowerPipe)
-        ) {
-          stopGame();
+        function pipeCollisionCheck(flappy: FlappyObject) {
+          if (
+            isCollision(flappy.imageKonva, pair.upperPipe) ||
+            isCollision(flappy.imageKonva, pair.lowerPipe)
+          ) {
+            flappy.playing = false;
+          }
         }
+
+        // Perform pipe collision check for all flappies
+        flappies.forEach((flappy) => {
+          pipeCollisionCheck(flappy);
+        });
 
         // Move existing pipes
         pair.upperPipe.move({ x: -pipeMovementSpeed, y: 0 });
@@ -192,34 +257,26 @@
         layer.add(upperPipe);
         layer.add(lowerPipe);
       }
-
-      // Animate Flappy
-      flappy.position({
-        x: flappy.x() + 0,
-        y: Math.max(
-          Math.min(
-            flappy.y() + flappyVelocity, // in between ground and ceiling
-            window.innerHeight - flappy.height(), // ground
-          ),
-          0, // ceiling
-        ),
-      });
-      flappyVelocity += flappyGravity;
     }, layer);
 
     // Handle spacebar events
     window.addEventListener("keydown", (event) => {
-      if (event.key === " ") {
-        if (!gameRunning && !gameOver) {
+      if (!gameRunning && !gameOver) {
+        if (event.key === " ") {
           // Start game when spacebar is pressed
           gameRunning = true;
           topText.remove();
           anim.start();
-        } else if (gameRunning && !gameOver) {
-          // Make Flappy Jump when Spacebar pressed
-          flappyVelocity = flappyJumpHeight;
         }
+      } else if (gameRunning && !gameOver) {
+        // Make flappies jump
+        flappies.forEach((flappy) => {
+          if (event.key === flappy.jumpKeyBind) {
+            flappy.downVelocity = flappyJumpHeight;
+          }
+        });
       }
+
       // Pause game when Escape is pressed
       if (event.key === "Escape") {
         if (gameRunning && !gameOver) {
