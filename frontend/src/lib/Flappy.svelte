@@ -14,18 +14,12 @@
   const pipeHorizontalGap = window.innerHeight / 2;
 
   // Flappies Constants
-  const noOfFlappies = 2;
-  const flappyImgSources = [
-    "src/assets/redbird-midflap.png",
-    "src/assets/yellowbird-midflap.png",
-    "src/assets/bluebird-midflap.png",
+  const noOfFlappies = 3;
+  const flappyData = [
+    { midflapSrc: "src/assets/redbird-midflap.png", jumpKeyBind: " " },
+    { midflapSrc: "src/assets/yellowbird-midflap.png", jumpKeyBind: "o" },
+    { midflapSrc: "src/assets/bluebird-midflap.png", jumpKeyBind: "p" },
   ];
-  const flappyImgObjs = flappyImgSources.map((src) => {
-    const imgObj = new Image();
-    imgObj.src = src;
-    return imgObj;
-  });
-  const jumpKeyBinds = [" ", "o", "p"];
 
   // Flappies Data Structure
   type FlappyObject = {
@@ -36,7 +30,9 @@
     jumpKeyBind: string;
   };
 
-  const flappies = flappyImgObjs.slice(0, noOfFlappies).map((imgObj, index) => {
+  const flappies = flappyData.slice(0, noOfFlappies).map((data) => {
+    const imgObj = new Image();
+    imgObj.src = data.midflapSrc;
     const imageKonva = new Konva.Image({
       x: flappyRightOffset,
       y: window.innerHeight / 2,
@@ -49,7 +45,7 @@
       imageObj: imgObj,
       downVelocity: 0,
       playing: true,
-      jumpKeyBind: jumpKeyBinds[index],
+      jumpKeyBind: data.jumpKeyBind,
     };
   });
 
@@ -197,7 +193,7 @@
           });
         } else {
           // If flappy is out and the last one, stop the game
-          if (flappies.length === 1) {
+          if (flappies.filter((flappy) => flappy.playing).length === 0) {
             stopGame();
           }
 
@@ -209,10 +205,6 @@
 
           // Remove flappies that are off-screen
           if (flappy.imageKonva.x() + flappy.imageKonva.width() < 0) {
-            const flappyIndex = flappies.indexOf(flappy);
-            if (flappyIndex !== -1) {
-              flappies.splice(flappyIndex, 1);
-            }
             flappy.imageKonva.destroy();
           }
         }
