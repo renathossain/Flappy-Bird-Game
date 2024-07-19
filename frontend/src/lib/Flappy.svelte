@@ -20,9 +20,9 @@
   // Flappies Constants
   const noOfFlappies = 3;
   const flappyData = [
-    { midflapSrc: "src/assets/redbird-midflap.png", jumpKeyBind: " " },
-    { midflapSrc: "src/assets/yellowbird-midflap.png", jumpKeyBind: "o" },
-    { midflapSrc: "src/assets/bluebird-midflap.png", jumpKeyBind: "p" },
+    { midflapSrc: "src/assets/redbird-midflap.png" },
+    { midflapSrc: "src/assets/yellowbird-midflap.png" },
+    { midflapSrc: "src/assets/bluebird-midflap.png" },
   ];
 
   // Flappies Data Structure
@@ -31,7 +31,6 @@
     imageObj: HTMLImageElement;
     downVelocity: number;
     playing: boolean;
-    jumpKeyBind: string;
   };
 
   const flappies = flappyData.slice(0, noOfFlappies).map((data) => {
@@ -49,7 +48,6 @@
       imageObj: imgObj,
       downVelocity: 0,
       playing: true,
-      jumpKeyBind: data.jumpKeyBind,
     };
   });
 
