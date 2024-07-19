@@ -7,15 +7,14 @@
   const socket = io("http://localhost:3000");
 
   // Magic Constants
-  const speed = 0.2;
   const flappyRightOffset = window.innerHeight / 10;
   const flappyWidth = 34 * (window.innerHeight / 400);
   const flappyHeight = 24 * (window.innerHeight / 400);
-  const flappyJumpHeight = (-window.innerHeight / 140) * speed;
-  const flappyGravity = (window.innerHeight / 3000) * speed;
+  const flappyJumpHeight = -window.innerHeight / 140;
+  const flappyGravity = window.innerHeight / 3000;
   const pipeWidth = window.innerHeight / 16;
   const pipeVerticalGap = window.innerHeight / 4;
-  const pipeMovementSpeed = (window.innerHeight / 250) * speed;
+  const pipeMovementSpeed = window.innerHeight / 250;
   const pipeHorizontalGap = window.innerHeight / 2;
 
   // Flappies Constants
@@ -282,13 +281,6 @@
           topText.remove();
           anim.start();
         }
-      } else if (gameRunning && !gameOver) {
-        // Make flappies jump
-        flappies.forEach((flappy, index) => {
-          if (event.key === flappy.jumpKeyBind) {
-            flappy.downVelocity = flappyJumpHeight;
-          }
-        });
       }
 
       // Pause game when Escape is pressed
