@@ -1,8 +1,16 @@
 <script lang="ts">
+  import { Router, Route } from "svelte-routing";
+  import Lobby from "./lib/Lobby.svelte";
   import Flappy from "./lib/Flappy.svelte";
-  import io from "socket.io-client";
+  import Player from "./lib/Player.svelte";
 
-  const socket = io("http://localhost:3000");
+  export let url = "";
 </script>
 
-<Flappy />
+<Router {url}>
+  <Route path="/"><Lobby /></Route>
+  <Route path="/game" component={Flappy} />
+  <Route path="/player/:username" let:params
+    ><Player username={params.username} /></Route
+  >
+</Router>

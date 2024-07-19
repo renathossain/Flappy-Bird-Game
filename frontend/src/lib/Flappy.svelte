@@ -1,16 +1,21 @@
 <script lang="ts">
   import Konva from "konva";
   import { onMount, onDestroy } from "svelte";
+  import io from "socket.io-client";
+
+  // Create Socket
+  const socket = io("http://localhost:3000");
 
   // Magic Constants
+  const speed = 0.2;
   const flappyRightOffset = window.innerHeight / 10;
   const flappyWidth = 34 * (window.innerHeight / 400);
   const flappyHeight = 24 * (window.innerHeight / 400);
-  const flappyJumpHeight = -window.innerHeight / 140;
-  const flappyGravity = window.innerHeight / 3000;
+  const flappyJumpHeight = (-window.innerHeight / 140) * speed;
+  const flappyGravity = (window.innerHeight / 3000) * speed;
   const pipeWidth = window.innerHeight / 16;
   const pipeVerticalGap = window.innerHeight / 4;
-  const pipeMovementSpeed = window.innerHeight / 250;
+  const pipeMovementSpeed = (window.innerHeight / 250) * speed;
   const pipeHorizontalGap = window.innerHeight / 2;
 
   // Flappies Constants
@@ -212,8 +217,13 @@
       }
 
       // Animate all flappies
-      flappies.forEach((flappy) => {
+      flappies.forEach((flappy, index) => {
         animateFlappy(flappy);
+
+        // Flappy jumps upon recieving signal
+        socket.on(`jump-${index}`, () => {
+          flappy.downVelocity = flappyJumpHeight;
+        });
       });
 
       pipePairs.forEach((pair) => {
@@ -274,7 +284,7 @@
         }
       } else if (gameRunning && !gameOver) {
         // Make flappies jump
-        flappies.forEach((flappy) => {
+        flappies.forEach((flappy, index) => {
           if (event.key === flappy.jumpKeyBind) {
             flappy.downVelocity = flappyJumpHeight;
           }
