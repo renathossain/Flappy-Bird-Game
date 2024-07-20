@@ -40,6 +40,7 @@
   </Dialog>
     
 </div>
+<a href="http://localhost:3000/auth/google">Login with Google</a>
 
  <div class="centre-buttons">
     <Button on:click={() => (openJoinGame = true)}>

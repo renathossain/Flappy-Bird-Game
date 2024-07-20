@@ -3,8 +3,8 @@ import { DataTypes } from "sequelize";
 
 export const User = sequelize.define("User", {
     googleId: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.STRING,
+        allowNull: false,
         primaryKey: true,
     },
     name: {

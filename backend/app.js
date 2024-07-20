@@ -4,17 +4,22 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { sequelize } from "./datasource.js";
 import passport from 'passport'
+import dotenv from "dotenv";
+//import './auth.js';
+import './auth.js';
 
+import { authRouter } from "./routers/auth_router.js";
 const PORT = 3000;
 export const app = express();
 app.use(bodyParser.json());
+dotenv.config();
 
 
 const corsOptions = {
     origin: "http://localhost:5173",
     credentials: true,
   };
-
+//console.log(process.env);
   app.use(cors(corsOptions));
 
   try{
@@ -35,7 +40,7 @@ const corsOptions = {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  //app.use("/api/auth", authRouter);
+  app.use("/auth", authRouter);
 
   app.listen(PORT, (err) => {
     if (err) console.log(err);
