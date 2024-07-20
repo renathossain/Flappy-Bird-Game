@@ -5,10 +5,10 @@ Postgre Server:
   - `initdb -D /var/lib/postgres/data` -- initialize postgres
   - `createuser --interactive` -- to create user
   - `createdb flappy` -- to create database
-  - `pg_ctl -D /var/lib/postgres/data -l logfile start` -- start the database
+  - `pg_ctl -D /var/lib/postgres/data -l logfile start` -- start the database within the user session
   - `exit` - to exit the user
-  - `sudo systemctl start postgresql.service` - start the postgre service
-  - `sudo systemctl enable postgresql.service` - enable the postgre service
+  - `sudo systemctl start postgresql.service` - start the postgre service(to run always in the background)
+  - `sudo systemctl enable postgresql.service` - enable the postgre service (to run always in the background)
 
 Backend Create:
   - `mkdir backend && cd backend`
