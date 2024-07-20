@@ -1,3 +1,15 @@
+Postgre Server:
+  - `sudo pacman -S postgresql`
+  - `yay -S pgadmin4-py` -- GUI interface
+  - `sudo -iu postgres` -- Switch to postgres user, `exit` to exit
+  - `initdb -D /var/lib/postgres/data` -- initialize postgres
+  - `createuser --interactive` -- to create user
+  - `createdb flappy` -- to create database
+  - `pg_ctl -D /var/lib/postgres/data -l logfile start` -- start the database
+  - `exit` - to exit the user
+  - `sudo systemctl start postgresql.service` - start the postgre service
+  - `sudo systemctl enable postgresql.service` - enable the postgre service
+
 Backend Create:
   - `mkdir backend && cd backend`
   - `npm init`

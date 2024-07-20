@@ -6,6 +6,10 @@
         navigate("/game");
     };
 
+    const navigateToLogin = () => {
+        navigate("/login");
+    };
+
     // Function to navigate to the player route with a specific username
     const navigateToPlayer = (username: string) => {
         navigate(`/player/${username}`);
@@ -15,6 +19,7 @@
 <div class="lobby-container">
     <h1>Welcome to the Lobby</h1>
     <button on:click={navigateToGame}>Play Game</button>
+    <button on:click={navigateToLogin}>Login</button>
     <div class="player-buttons">
         <button on:click={() => navigateToPlayer("0")}>Player 0</button>
         <button on:click={() => navigateToPlayer("1")}>Player 1</button>

@@ -3,6 +3,7 @@
   import Lobby from "./lib/Lobby.svelte";
   import Flappy from "./lib/Flappy.svelte";
   import Player from "./lib/Player.svelte";
+  import Login from "./lib/Login.svelte";
 
   export let url = "";
 </script>
@@ -13,11 +14,5 @@
   <Route path="/player/:username" let:params
     ><Player username={params.username} /></Route
   >
+  <Route path="/login" component={Login} />
 </Router>
-
-<!-- <script>
-  import LandingPage from "./lib/LandingPage.svelte";
-</script>
-
-<link rel="stylesheet" href="node_modules/svelte-material-ui/bare.css" />
-<LandingPage /> -->
