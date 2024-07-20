@@ -84,7 +84,7 @@
     justify-content: center;
     width: 100vw;
     height: 100vh;
-    background-image: url("../../public/background-night.png");
+    background-image: url("src/assets/background-night.png");
     background-repeat: repeat-x;
     background-size: contain;
   }
