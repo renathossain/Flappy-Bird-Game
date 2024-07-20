@@ -21,7 +21,7 @@ authRouter.get('/google', passport.authenticate('google', { scope: ['profile', '
 authRouter.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     function (req, res) {
-        res.redirect('/');
+        res.redirect('http://localhost:5173/game');
     });
 
 

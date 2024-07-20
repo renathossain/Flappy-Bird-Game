@@ -15,29 +15,28 @@ passport.use(new GoogleStrategy({
   },
   async function(request, accessToken, refreshToken, profile, done) {
     try{
-      const user = await User.findOne({ where: { googleId: profile.id } });
+      let user = await User.findOne({ where: { googleId: profile.id } });
       if(!user){
-        const newUser = await User.create({
+        user = await User.create({
           googleId: profile.id,
           name: profile.displayName,
           email: profile.emails[0].value
         });
-        return done(null, newUser);
       }
+      return done(null, user);
     }catch(err){
       return done(err, null);
     }
-    return done(null, profile);
   }
 ));
 
 passport.serializeUser(function(user, done) { 
-  done(null, user);
+  done(null, user.googleId);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function(googleId, done) {
   try{
-    const newUser = User.findOne({ where: { googleId: user.googleId } });
+    const newUser = User.findOne({ where: { googleId: googleId } });
     return done(null, newUser);
   }catch(err){
     return done(err, null);
