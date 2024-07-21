@@ -37,10 +37,5 @@
     font-size: 50px;
     background-color: #e86101;
     padding: 10px;
-    transition: background-color 0.3s ease;
-  }
-
-  .container3:hover {
-    background-color: #aa4700;
   }
 </style>

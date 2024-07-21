@@ -8,7 +8,7 @@
 
 <div class="container">
   <div class="retro-container code">Code: {lobbyCode}</div>
-  <div class="retro-container players">
+  <div class="players">
     {#each playerUsernames as username}
       <Avatar {username} />
     {/each}
@@ -21,14 +21,16 @@
 
 <style>
   .container {
-    width: calc(100vw - 40px);
-    height: calc(100vh - 400px);
+    width: 90vw;
+    height: 80vh;
     margin: 20px;
     display: flex;
     flex-direction: column;
   }
 
   .code {
+    width: fit-content;
+    display: inline-block;
     margin-bottom: 20px;
   }
 

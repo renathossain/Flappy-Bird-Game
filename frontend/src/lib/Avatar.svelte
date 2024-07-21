@@ -2,13 +2,39 @@
   export let username;
 </script>
 
-<div id="container">
-  {username}
+<div class="container">
+  <div class="retro-container username">{username}</div>
+  <img src="src/assets/flappies/1.png" alt="Flappy" />
 </div>
 
 <style>
-  #container {
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.3);
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    max-width: 600px;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #543847;
+    margin: 50px auto;
+
+    /* Glassy effect */
+    background-color: rgba(255, 255, 255, 0.2); /* semi-transparent white */
+    backdrop-filter: blur(10px); /* blur behind the element */
+    border-radius: 10px; /* rounded corners */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* subtle shadow */
+    transition: background-color 0.3s ease; /* smooth transition */
+  }
+
+  .username {
+    font-size: 2vw;
+    margin-bottom: 10px;
+  }
+
+  img {
+    image-rendering: pixelated;
+    width: 50%;
+    max-width: 300px;
+    margin-top: 20px;
   }
 </style>
