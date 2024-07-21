@@ -1,5 +1,6 @@
 <script lang="ts">
-  import Textbox from "./Textbox.svelte";
+  import Button from "./Button.svelte";
+  import Avatar from "./Avatar.svelte";
   import { navigate } from "svelte-routing";
 
   const code = 12345;
@@ -13,9 +14,13 @@
 <div class="container">
   <div class="retro-container code">Code: {code}</div>
   <div class="retro-container players">
-    <div class="player"></div>
-    <div class="player"></div>
-    <div class="player"></div>
+    <Avatar></Avatar>
+    <Avatar></Avatar>
+    <Avatar></Avatar>
+  </div>
+  <div class="controls">
+    <Button text="Destroy Lobby" link="/"></Button>
+    <Button text="Start Game" link="/game"></Button>
   </div>
 </div>
 
@@ -28,19 +33,20 @@
     flex-direction: column;
   }
 
+  .code {
+    margin-bottom: 20px;
+  }
+
   .players {
+    margin-bottom: 20px;
     flex: auto;
     display: flex;
     column-gap: 20px;
   }
 
-  .player {
-    background-color: rgba(0, 0, 0, 0.3);
-    flex: auto;
-  }
-
-  .code {
-    width: 500px;
-    margin-bottom: 20px;
+  .controls {
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 20px;
   }
 </style>
