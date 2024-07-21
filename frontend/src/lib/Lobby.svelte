@@ -1,22 +1,17 @@
 <script lang="ts">
   import Button from "./Button.svelte";
   import Avatar from "./Avatar.svelte";
-  import { navigate } from "svelte-routing";
 
-  const code = 12345;
-
-  // Function to navigate to the player route with a specific username
-  const navigateToPlayer = (username: string) => {
-    navigate(`/player/${username}`);
-  };
+  const lobbyCode = 12345;
+  const playerUsernames = ["amy", "bobby", "clinton"];
 </script>
 
 <div class="container">
-  <div class="retro-container code">Code: {code}</div>
+  <div class="retro-container code">Code: {lobbyCode}</div>
   <div class="retro-container players">
-    <Avatar></Avatar>
-    <Avatar></Avatar>
-    <Avatar></Avatar>
+    {#each playerUsernames as username}
+      <Avatar {username} />
+    {/each}
   </div>
   <div class="controls">
     <Button text="Destroy Lobby" link="/"></Button>

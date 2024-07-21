@@ -20,9 +20,9 @@
   // Flappies Constants
   const noOfFlappies = 3;
   const flappyData = [
-    { midflapSrc: "src/assets/redbird-midflap.png" },
-    { midflapSrc: "src/assets/yellowbird-midflap.png" },
-    { midflapSrc: "src/assets/bluebird-midflap.png" },
+    "src/assets/flappies/1.png",
+    "src/assets/flappies/2.png",
+    "src/assets/flappies/3.png",
   ];
 
   // Flappies Data Structure
@@ -35,7 +35,7 @@
 
   const flappies = flappyData.slice(0, noOfFlappies).map((data) => {
     const imgObj = new Image();
-    imgObj.src = data.midflapSrc;
+    imgObj.src = data;
     const imageKonva = new Konva.Image({
       x: flappyRightOffset,
       y: window.innerHeight / 2,
