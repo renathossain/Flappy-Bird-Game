@@ -17,6 +17,7 @@
   .button-link {
     display: inline-block;
     text-decoration: none;
+    margin-bottom: 20px;
   }
 
   .container1 {

@@ -3,7 +3,7 @@
   import Avatar from "./Avatar.svelte";
 
   const lobbyCode = 12345;
-  const playerUsernames = ["amy", "bobby", "clinton"];
+  const playerUsernames = ["amy", "bobby", "clinton", "dare"];
 </script>
 
 <div class="container">
