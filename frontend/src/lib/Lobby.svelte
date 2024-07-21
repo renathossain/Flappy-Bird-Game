@@ -1,40 +1,46 @@
 <script lang="ts">
-    import { navigate } from "svelte-routing";
+  import Textbox from "./Textbox.svelte";
+  import { navigate } from "svelte-routing";
 
-    // Function to navigate to the player route with a specific username
-    const navigateToPlayer = (username: string) => {
-        navigate(`/player/${username}`);
-    };
+  const code = 12345;
+
+  // Function to navigate to the player route with a specific username
+  const navigateToPlayer = (username: string) => {
+    navigate(`/player/${username}`);
+  };
 </script>
 
-<div class="lobby-container">
-    <h1>Welcome to the Lobby</h1>
-    <button on:click={() => navigate("/game")}>Play Game</button>
-    <button on:click={() => navigate("/login")}>Login</button>
-    <div class="player-buttons">
-        <button on:click={() => navigateToPlayer("0")}>Player 0</button>
-        <button on:click={() => navigateToPlayer("1")}>Player 1</button>
-        <button on:click={() => navigateToPlayer("2")}>Player 2</button>
-    </div>
+<div class="container">
+  <div class="retro-container code">Code: {code}</div>
+  <div class="retro-container players">
+    <div class="player"></div>
+    <div class="player"></div>
+    <div class="player"></div>
+  </div>
 </div>
 
 <style>
-    .lobby-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-    }
+  .container {
+    width: calc(100vw - 40px);
+    height: calc(100vh - 400px);
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+  }
 
-    button {
-        margin: 10px;
-        padding: 10px 20px;
-        font-size: 1.2em;
-        cursor: pointer;
-    }
+  .players {
+    flex: auto;
+    display: flex;
+    column-gap: 20px;
+  }
 
-    .player-buttons {
-        margin-top: 20px;
-    }
+  .player {
+    background-color: rgba(0, 0, 0, 0.3);
+    flex: auto;
+  }
+
+  .code {
+    width: 500px;
+    margin-bottom: 20px;
+  }
 </style>

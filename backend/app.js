@@ -66,7 +66,6 @@ io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
 
   socket.on("jump", (username) => {
-    console.log(`Jumping ${username}`);
     io.emit(`jump-${username}`);
   });
 

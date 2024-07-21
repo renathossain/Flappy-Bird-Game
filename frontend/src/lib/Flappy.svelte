@@ -249,8 +249,7 @@
           !pair.passed
         ) {
           pair.passed = true;
-          score++;
-          scoreText.text(`Score: ${score}`);
+          scoreText.text(`Score: ${++score}`);
         }
 
         // Remove pipes that are off-screen
@@ -301,13 +300,3 @@
 </script>
 
 <div id="container"></div>
-
-<style>
-  #container {
-    height: 100vh;
-    width: 100vw;
-    background-image: url("src/assets/background-day.png");
-    background-repeat: repeat-x;
-    background-size: contain;
-  }
-</style>

@@ -79,16 +79,6 @@
 </main>
 
 <style>
-  .background-container {
-    display: flex;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    background-image: url("src/assets/background-night.png");
-    background-repeat: repeat-x;
-    background-size: contain;
-  }
-
   .centre-buttons {
     display: flex;
     flex-direction: column;
