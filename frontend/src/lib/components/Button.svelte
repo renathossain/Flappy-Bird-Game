@@ -21,10 +21,8 @@
   }
 
   .container1 {
-    color: #fffefd;
     background-color: #553000;
     padding: 5px 5px 10px 5px;
-    display: inline-block;
   }
 
   .container2 {
@@ -36,6 +34,7 @@
     text-align: center;
     font-family: "RetroGaming", sans-serif;
     font-size: 50px;
+    color: #fffefd;
     background-color: #e86101;
     padding: 10px;
   }

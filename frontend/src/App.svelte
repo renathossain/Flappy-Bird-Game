@@ -2,17 +2,21 @@
   import { Router, Route } from "svelte-routing";
   import Main from "./lib/Main.svelte";
   import Lobby from "./lib/Lobby.svelte";
-  import Flappy from "./lib/Flappy.svelte";
+  import Game from "./lib/Game.svelte";
   import Player from "./lib/Player.svelte";
   import Login from "./lib/Login.svelte";
 
   export let url = "";
 </script>
 
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+/>
 <Router {url}>
   <Route path="/"><Main /></Route>
   <Route path="/lobby"><Lobby /></Route>
-  <Route path="/game" component={Flappy} />
+  <Route path="/game" component={Game} />
   <Route path="/player/:username" let:params
     ><Player username={params.username} /></Route
   >

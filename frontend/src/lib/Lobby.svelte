@@ -1,13 +1,13 @@
 <script lang="ts">
-  import Button from "./Button.svelte";
-  import Avatar from "./Avatar.svelte";
+  import Button from "./components/Button.svelte";
+  import Avatar from "./components/Avatar.svelte";
 
-  const lobbyCode = 12345;
+  const code = 12345;
   const playerUsernames = ["amy", "bobby", "clinton", "dare"];
 </script>
 
 <div class="container">
-  <div class="retro-container code">Code: {lobbyCode}</div>
+  <div class="retro-container code">Code: {code}</div>
   <div class="players">
     {#each playerUsernames as username}
       <Avatar {username} />
