@@ -2,7 +2,7 @@
 	import Button from "./components/Button.svelte";
 	import NumberInput from "./components/NumberInput.svelte";
 	import ProfilePic from "./components/ProfilePic.svelte";
-	import { user, registered } from "../store";
+	import { registered } from "../store";
 </script>
 
 <div class="header">
@@ -31,6 +31,9 @@
 		position: absolute;
 		top: 20px;
 		right: 20px;
+		display: flex;
+		align-items: flex-start;
+		gap: 10px;
 	}
 
 	.container {
