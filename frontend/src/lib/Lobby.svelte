@@ -1,46 +1,49 @@
 <script lang="ts">
-  import Textbox from "./Textbox.svelte";
-  import { navigate } from "svelte-routing";
+  import Button from "./components/Button.svelte";
+  import Avatar from "./components/Avatar.svelte";
 
   const code = 12345;
-
-  // Function to navigate to the player route with a specific username
-  const navigateToPlayer = (username: string) => {
-    navigate(`/player/${username}`);
-  };
+  const playerUsernames: string[] = ["amy", "bobby", "clinton", "dare"];
 </script>
 
 <div class="container">
   <div class="retro-container code">Code: {code}</div>
-  <div class="retro-container players">
-    <div class="player"></div>
-    <div class="player"></div>
-    <div class="player"></div>
+  <div class="players">
+    {#each playerUsernames as username}
+      <Avatar {username} />
+    {/each}
+  </div>
+  <div class="controls">
+    <Button text="Destroy Lobby" link="/"></Button>
+    <Button text="Start Game" link="/game"></Button>
   </div>
 </div>
 
 <style>
   .container {
-    width: calc(100vw - 40px);
-    height: calc(100vh - 400px);
+    width: 90vw;
+    height: 80vh;
     margin: 20px;
     display: flex;
     flex-direction: column;
   }
 
+  .code {
+    width: fit-content;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
   .players {
+    margin-bottom: 20px;
     flex: auto;
     display: flex;
     column-gap: 20px;
   }
 
-  .player {
-    background-color: rgba(0, 0, 0, 0.3);
-    flex: auto;
-  }
-
-  .code {
-    width: 500px;
-    margin-bottom: 20px;
+  .controls {
+    display: flex;
+    justify-content: flex-end;
+    column-gap: 20px;
   }
 </style>

@@ -1,6 +1,7 @@
 Postgre Server:
   - `sudo pacman -S postgresql`
-  - `yay -S pgadmin4-py` -- GUI interface
+  - `sudo pipx install pgadmin4` -- GUI interface
+  - `sudo -u postgres psql` - Start interactive Database
   - `sudo -iu postgres` -- Switch to postgres user, `exit` to exit
   - `initdb -D /var/lib/postgres/data` -- initialize postgres
   - `createuser --interactive` -- to create user
