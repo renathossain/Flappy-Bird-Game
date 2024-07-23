@@ -1,6 +1,6 @@
 <script lang="ts">
   let code: string = "";
-  const onlyNumbers = () => (code = code.replace(/\D/g, ""));
+  const onlyNumbers = () => (code = code.replace(/\D*(\d{0,4}).*/, "$1"));
 </script>
 
 <div class="container1">

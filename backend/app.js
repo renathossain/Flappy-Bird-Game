@@ -2,21 +2,23 @@ import express from "express";
 import session from "express-session";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { createServer } from "http";
 import { Server } from "socket.io";
 import { sequelize } from "./datasource.js";
 import passport from 'passport'
 import dotenv from "dotenv";
-import './auth.js';
-
 import { authRouter } from "./routers/auth_router.js";
-
-const PORT = 3000;
-export const app = express();
-
+import './auth.js';
 dotenv.config();
 
+const PORT = 3000;
+
+export const app = express();
+
 // Middleware
+function isLoggedIn(req, res, next) {
+  req.user ? next() : res.sendStatus(401);
+}
+
 app.use(bodyParser.json());
 
 const corsOptions = {
@@ -28,7 +30,7 @@ app.use(cors(corsOptions));
 // Session setup
 app.use(
   session({
-    secret: process.env.SECRET_KEY || "test",
+    secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: true,
   })
@@ -48,11 +50,18 @@ try {
 }
 
 // Routes
-app.use("/auth", authRouter);
+app.use("/", authRouter);
 
-// HTTP server setup
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
+app.get('/protected', isLoggedIn, (req, res) => {
+  res.send(`Hello ${req.user.displayName}`);
+});
+
+// Socket.IO integration with express
+const server = app.listen(PORT, () => {
+  console.log(`Backend server running on http://localhost:${PORT}`);
+});
+
+const io = new Server(server, {
   cors: {
     origin: "*", // Allow all origins (for development purposes)
     methods: ["GET", "POST"], // Allow only GET and POST requests
@@ -72,9 +81,4 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(`Client disconnected: ${socket.id}`);
   });
-});
-
-// Start the HTTP server
-httpServer.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
 });
