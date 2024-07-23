@@ -1,12 +1,9 @@
 import { Router } from "express";
+import { ensureAuth } from "../middleware/auth.js";
 
 export const userRouter = Router();
 
-function isLoggedIn(req, res, next) {
-  req.user ? next() : res.sendStatus(401);
-}
-
-userRouter.get('/user/profile', isLoggedIn, (req, res) => {
+userRouter.get('/api/user', ensureAuth, (req, res) => {
   const user = req.user;
   const userInfo = {
     id: user.id,
@@ -16,5 +13,11 @@ userRouter.get('/user/profile', isLoggedIn, (req, res) => {
     givenName: user.name.givenName,
     photo: user.photos[0].value
   };
-  res.json(userInfo);
+
+  // Send user info if authenticated
+  if (req.isAuthenticated()) {
+    res.json({ registered: true, user: userInfo });
+  } else {
+    res.json({ registered: false });
+  }
 });

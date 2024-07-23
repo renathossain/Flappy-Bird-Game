@@ -8,7 +8,7 @@ import { authRouter } from "./routers/auth_router.js";
 import { userRouter } from "./routers/user_router.js";
 import { sequelize } from "./datasource.js";
 import initializeSocket from "./socket.js";
-import './auth.js';
+import './oauth.js';
 dotenv.config();
 
 const PORT = 3000;

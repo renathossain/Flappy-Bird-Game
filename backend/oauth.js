@@ -12,14 +12,25 @@ passport.use(new GoogleStrategy({
 },
   async function (request, accessToken, refreshToken, profile, done) {
     try {
-      let user = await User.findOne({ where: { googleId: profile.id } });
+      // Find user
+      let user = await User.findOne({ where: { id: profile.id } });
 
-      if (!user) {
-        user = await User.create({
-          googleId: profile.id,
-          name: profile.displayName,
-          email: profile.emails[0].value
-        });
+      const userData = {
+        id: profile.id,
+        email: profile.emails[0].value,
+        displayName: profile.displayName,
+        familyName: profile.name.familyName,
+        givenName: profile.name.givenName,
+        photo: profile.photos[0].value
+      };
+
+      // Check if user exists
+      if (user) {
+        // Update existing user
+        user = await user.update(userData);
+      } else {
+        // Create new user
+        user = await User.create(userData);
       }
 
       return done(null, profile);

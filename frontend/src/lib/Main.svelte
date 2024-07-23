@@ -2,17 +2,22 @@
 	import { onMount } from "svelte";
 	import Button from "./components/Button.svelte";
 	import NumberInput from "./components/NumberInput.svelte";
+	import { user, registered } from "../store.js";
 
-	let userName: string | null = null;
+	onMount(async () => {
+		const res = await fetch("/api/user");
+		const data = await res.json();
+		registered.set(data.registered);
+		user.set(data.user);
+	});
 </script>
 
 <div class="header">
-	{#if userName}
-		<p>Welcome, {userName}</p>
+	{#if $registered}
 		<Button text="Store" link="/store"></Button>
-		<Button text="Sign Out" link=""></Button>
+		<Button text="Sign Out" link="/auth/logout"></Button>
 	{:else}
-		<Button text="Sign In" link="http://localhost:3000/auth/google"></Button>
+		<Button text="Sign In" link="/auth/google"></Button>
 	{/if}
 </div>
 
