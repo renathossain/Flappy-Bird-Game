@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import dotenv from 'dotenv';
-import { User } from './models/users.js';
+import { User, PurchasedSkins } from './models/users.js';
 dotenv.config();
 
 passport.use(new GoogleStrategy({
@@ -30,7 +30,19 @@ passport.use(new GoogleStrategy({
         user = await user.update(userData);
       } else {
         // Create new user
-        user = await User.create(userData);
+        user = await User.create({
+          ...userData,
+          current_skin: 1 // Set default skin ID
+        });
+
+        // Assign skins (IDs 1, 2, 3) to the new user
+        const skinIds = [1, 2, 3];
+        const purchasedSkins = skinIds.map(skinId => ({
+          userId: user.id,
+          skinId
+        }));
+
+        await PurchasedSkins.bulkCreate(purchasedSkins);
       }
 
       return done(null, profile);

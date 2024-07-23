@@ -7,6 +7,8 @@ import dotenv from "dotenv";
 import { authRouter } from "./routers/auth_router.js";
 import { userRouter } from "./routers/user_router.js";
 import { sequelize } from "./datasource.js";
+import { Skin } from "./models/skins.js";
+import { User, PurchasedSkins } from "./models/users.js";
 import initializeSocket from "./socket.js";
 import './oauth.js';
 dotenv.config();
@@ -33,18 +35,21 @@ app.use(
   })
 );
 
-// Passport initialization
-app.use(passport.initialize());
-app.use(passport.session());
-
 // Sequelize database connection
 try {
   await sequelize.authenticate();
+  await Skin.sync();
+  await User.sync();
+  await PurchasedSkins.sync();
   await sequelize.sync({ alter: { drop: false } });
   console.log("Connection has been established successfully.");
 } catch (error) {
   console.error("Unable to connect to the database:", error);
 }
+
+// Passport initialization
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use("/", authRouter);
