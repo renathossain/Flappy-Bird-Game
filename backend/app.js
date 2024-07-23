@@ -2,11 +2,12 @@ import express from "express";
 import session from "express-session";
 import bodyParser from "body-parser";
 import cors from "cors";
-import { Server } from "socket.io";
-import { sequelize } from "./datasource.js";
 import passport from 'passport'
 import dotenv from "dotenv";
 import { authRouter } from "./routers/auth_router.js";
+import { userRouter } from "./routers/user_router.js";
+import { sequelize } from "./datasource.js";
+import initializeSocket from "./socket.js";
 import './auth.js';
 dotenv.config();
 
@@ -15,10 +16,6 @@ const PORT = 3000;
 export const app = express();
 
 // Middleware
-function isLoggedIn(req, res, next) {
-  req.user ? next() : res.sendStatus(401);
-}
-
 app.use(bodyParser.json());
 
 const corsOptions = {
@@ -51,34 +48,12 @@ try {
 
 // Routes
 app.use("/", authRouter);
-
-app.get('/protected', isLoggedIn, (req, res) => {
-  res.send(`Hello ${req.user.displayName}`);
-});
+app.use("/", userRouter);
 
 // Socket.IO integration with express
 const server = app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
 });
 
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Allow all origins (for development purposes)
-    methods: ["GET", "POST"], // Allow only GET and POST requests
-  },
-  transports: ['websocket', 'polling'], // Allow WebSocket and HTTP polling transport
-  allowEIO3: true, // Allow connections from clients using EIO 3
-});
-
-// Socket.IO connection handling
-io.on("connection", (socket) => {
-  console.log(`Client connected: ${socket.id}`);
-
-  socket.on("jump", (username) => {
-    io.emit(`jump-${username}`);
-  });
-
-  socket.on("disconnect", () => {
-    console.log(`Client disconnected: ${socket.id}`);
-  });
-});
+// Initialize Socket.IO
+initializeSocket(server);

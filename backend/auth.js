@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import { User } from './models/users.js';
 dotenv.config();
 
-//https://www.passportjs.org/packages/passport-google-oauth2/
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
