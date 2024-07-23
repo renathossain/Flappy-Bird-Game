@@ -14,7 +14,7 @@
 
 <div class="header">
 	{#if $registered}
-		<Button text="Store" link="/store"></Button>
+		<Button text="Buy/Change Skins" link="/store"></Button>
 		<Button text="Sign Out" link="/auth/logout"></Button>
 	{:else}
 		<Button text="Sign In" link="/auth/google"></Button>

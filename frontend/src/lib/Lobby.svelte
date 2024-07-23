@@ -3,7 +3,7 @@
   import Avatar from "./components/Avatar.svelte";
 
   const code = 12345;
-  const playerUsernames = ["amy", "bobby", "clinton", "dare"];
+  const playerUsernames: string[] = ["amy", "bobby", "clinton", "dare"];
 </script>
 
 <div class="container">

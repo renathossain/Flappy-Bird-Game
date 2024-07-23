@@ -9,6 +9,7 @@ import { userRouter } from "./routers/user_router.js";
 import { sequelize } from "./datasource.js";
 import { Skin } from "./models/skins.js";
 import { User, PurchasedSkins } from "./models/users.js";
+import { Lobby, LobbyUser } from "./models/lobby.js";
 import initializeSocket from "./socket.js";
 import './oauth.js';
 dotenv.config();
@@ -41,6 +42,8 @@ try {
   await Skin.sync();
   await User.sync();
   await PurchasedSkins.sync();
+  await Lobby.sync();
+  await LobbyUser.sync();
   await sequelize.sync({ alter: { drop: false } });
   console.log("Connection has been established successfully.");
 } catch (error) {
