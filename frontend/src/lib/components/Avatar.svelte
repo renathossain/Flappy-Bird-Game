@@ -3,8 +3,8 @@
 </script>
 
 <div class="container">
-  <div class="retro-container username">{username}</div>
-  <img src="src/assets/flappies/1.png" alt="Flappy" />
+  <div class="username">{username}</div>
+  <img src="/assets/flappies/1.png" alt="Flappy" />
 </div>
 
 <style>
@@ -27,6 +27,8 @@
   }
 
   .username {
+    font-family: "RetroGaming", sans-serif;
+    color: #553000;
     font-size: 2vw;
     margin-bottom: 10px;
   }

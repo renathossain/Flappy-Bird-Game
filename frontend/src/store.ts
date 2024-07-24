@@ -11,8 +11,8 @@ interface User {
 }
 export const user = writable<User | null>(null);
 
-const storedCode = localStorage.getItem('lobbyCode') || '';
+const storedCode = localStorage.getItem('joinCode') || '';
 export const codeStore = writable(storedCode);
 codeStore.subscribe(value => {
-  localStorage.setItem('lobbyCode', value);
+  localStorage.setItem('joinCode', value);
 });

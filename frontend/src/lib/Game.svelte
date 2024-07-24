@@ -20,9 +20,9 @@
   // Flappies Constants
   const noOfFlappies = 3;
   const flappyData = [
-    "src/assets/flappies/1.png",
-    "src/assets/flappies/2.png",
-    "src/assets/flappies/3.png",
+    "/assets/flappies/1.png",
+    "/assets/flappies/2.png",
+    "assets/flappies/3.png",
   ];
 
   // Flappies Data Structure
@@ -83,10 +83,10 @@
 
   // Pipe Data Structures
   const pipeUpperImgObj = new Image();
-  pipeUpperImgObj.src = "src/assets/pipe-green-upper.png";
+  pipeUpperImgObj.src = "/assets/pipe-green-upper.png";
 
   const pipeLowerImgObj = new Image();
-  pipeLowerImgObj.src = "src/assets/pipe-green-lower.png";
+  pipeLowerImgObj.src = "/assets/pipe-green-lower.png";
 
   let pipePairs: {
     upperPipe: Konva.Rect;

@@ -14,11 +14,9 @@ const generateUniqueCode = async () => {
   return code;
 };
 
-
 // Create a lobby
 lobbyRouter.post('/api/lobby', isLoggedIn, async (req, res) => {
   try {
-    // A user owns the lobby
     const { userId } = req.body;
 
     // Check if user exists
@@ -30,7 +28,9 @@ lobbyRouter.post('/api/lobby', isLoggedIn, async (req, res) => {
     // Check if user already has a lobby
     const existingLobby = await Lobby.findOne({ where: { userId } });
     if (existingLobby) {
-      return res.status(400).json({ message: "User already has a lobby" });
+      return res.status(200).json({
+        lobbyId: existingLobby.id,
+      });
     }
 
     // Generate a unique 4-digit code
@@ -41,7 +41,7 @@ lobbyRouter.post('/api/lobby', isLoggedIn, async (req, res) => {
 
     // Respond with the details of the created lobby
     res.status(201).json({
-      id: newLobby.id,
+      lobbyId: newLobby.id,
     });
   } catch (error) {
     res.status(500).json({

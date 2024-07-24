@@ -4,6 +4,7 @@
 
   // Initialize constants
   export let username;
+  export let lobbyId;
   const socket = io("http://localhost:3000");
 
   // Make your flappy jump

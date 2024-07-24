@@ -2,12 +2,12 @@
   import Button from "./components/Button.svelte";
   import Avatar from "./components/Avatar.svelte";
 
-  const code = 12345;
-  const playerUsernames: string[] = ["amy", "bobby", "clinton", "dare"];
+  export let lobbyId;
+  const playerUsernames: string[] = ["amy", "bobby", "clinton"];
 </script>
 
 <div class="container">
-  <div class="retro-container code">Code: {code}</div>
+  <div class="retro-container code">Code: {lobbyId}</div>
   <div class="players">
     {#each playerUsernames as username}
       <Avatar {username} />
@@ -26,6 +26,17 @@
     margin: 20px;
     display: flex;
     flex-direction: column;
+  }
+
+  .retro-container {
+    text-align: center;
+    font-family: "RetroGaming", sans-serif;
+    font-size: 50px;
+    color: #fc7858;
+    background-color: #ded895;
+    border-radius: 30px 70px 50px 10px / 20px 40px 60px 80px;
+    border: 4px solid #543847;
+    padding: 20px;
   }
 
   .code {
