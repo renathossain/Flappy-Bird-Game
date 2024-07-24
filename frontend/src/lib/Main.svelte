@@ -2,11 +2,11 @@
 	import Button from "./components/Button.svelte";
 	import NumberInput from "./components/NumberInput.svelte";
 	import ProfilePic from "./components/ProfilePic.svelte";
-	import { registered } from "../store";
+	import { user } from "../store";
 </script>
 
 <div class="header">
-	{#if $registered}
+	{#if $user}
 		<Button text="Buy/Change Skins" link="/store"></Button>
 		<Button text="Sign Out" link="/auth/logout"></Button>
 		<ProfilePic></ProfilePic>

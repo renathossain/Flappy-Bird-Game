@@ -11,4 +11,3 @@ interface User {
 }
 
 export const user = writable<User | null>(null);
-export const registered = writable<boolean>(false);

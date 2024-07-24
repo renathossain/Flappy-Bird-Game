@@ -5,12 +5,11 @@
   import Lobby from "./lib/Lobby.svelte";
   import Game from "./lib/Game.svelte";
   import Player from "./lib/Player.svelte";
-  import { user, registered } from "./store";
+  import { user } from "./store";
 
   onMount(async () => {
     const res = await fetch("/api/user");
     const data = await res.json();
-    registered.set(data.registered);
     user.set(data.user);
   });
 </script>
