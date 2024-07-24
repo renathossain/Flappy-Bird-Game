@@ -2,27 +2,21 @@ import { sequelize } from "../datasource.js";
 import { DataTypes } from "sequelize";
 import { User } from "./users.js";
 
-// Function to generate a unique 4-digit code
-const generateUniqueCode = () => {
-  let code;
-  do {
-    code = Math.floor(1000 + Math.random() * 9000);
-  } while (Lobby.findOne({ where: { code } }));
-  return code;
-};
-
 export const Lobby = sequelize.define("lobbies", {
   id: {
     type: DataTypes.INTEGER,
-    autoIncrement: true,
     allowNull: false,
     primaryKey: true,
+    autoIncrement: false,
   },
-  code: {
-    type: DataTypes.INTEGER,
+  userId: {
+    type: DataTypes.STRING,
     allowNull: false,
+    references: {
+      model: User,
+      key: 'id',
+    },
     unique: true,
-    defaultValue: generateUniqueCode,
   }
 });
 
@@ -37,6 +31,7 @@ export const LobbyUser = sequelize.define("lobby_users", {
     },
     primaryKey: true,
   },
+  // Participants of the lobby
   userId: {
     type: DataTypes.STRING,
     allowNull: false,

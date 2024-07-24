@@ -4,18 +4,45 @@ import { Lobby, LobbyUser } from "../models/lobby.js";
 
 export const lobbyRouter = Router();
 
+// Generate a unique 4-digit code
+const generateUniqueCode = async () => {
+  let code;
+  do {
+    code = Math.floor(1000 + Math.random() * 9000);
+  } while (await Lobby.findOne({ where: { id: code } }));
+  return code;
+};
+
+
+// Create a lobby
 lobbyRouter.post('/api/lobby', async (req, res) => {
   try {
+    // A user owns the lobby
+    const { userId } = req.body;
+
+    // Check if user exists
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if user already has a lobby
+    const existingLobby = await Lobby.findOne({ where: { userId } });
+    if (existingLobby) {
+      return res.status(400).json({ message: "User already has a lobby" });
+    }
+
+    // Generate a unique 4-digit code
+    const uniqueCode = await generateUniqueCode();
+
     // Create a new lobby with a unique 4-digit code
-    const newLobby = await Lobby.create();
+    const newLobby = await Lobby.create({ id: uniqueCode, userId });
 
     // Respond with the details of the created lobby
     res.status(201).json({
       id: newLobby.id,
-      code: newLobby.code,
     });
   } catch (error) {
-    console.error("Error creating lobby:", error.message);
     res.status(500).json({
       message: "Error creating lobby",
       error: error.message
@@ -25,7 +52,7 @@ lobbyRouter.post('/api/lobby', async (req, res) => {
 
 // Join a lobby
 lobbyRouter.post('/api/lobby/join', async (req, res) => {
-  const { userId, code } = req.body;
+  const { userId, lobbyId } = req.body;
 
   try {
     // Check if user exists
@@ -35,7 +62,7 @@ lobbyRouter.post('/api/lobby/join', async (req, res) => {
     }
 
     // Find the lobby by code
-    const lobby = await Lobby.findOne({ where: { code } });
+    const lobby = await Lobby.findOne({ where: { id: lobbyId } });
     if (!lobby) {
       return res.status(404).json({ message: "Lobby not found" });
     }
@@ -59,7 +86,6 @@ lobbyRouter.post('/api/lobby/join', async (req, res) => {
 
     res.status(200).json({ message: "User joined the lobby successfully" });
   } catch (error) {
-    console.error("Error joining lobby:", error.message);
     res.status(500).json({
       message: "Error joining lobby",
       error: error.message
@@ -68,26 +94,54 @@ lobbyRouter.post('/api/lobby/join', async (req, res) => {
 });
 
 // Leave a lobby
-lobbyRouter.post('/api/lobby/leave', async (req, res) => {
+lobbyRouter.delete('/api/lobby/leave', async (req, res) => {
   const { userId, lobbyId } = req.body;
 
   try {
     const user = await User.findByPk(userId);
     const lobby = await Lobby.findByPk(lobbyId);
 
+    // Check if user and lobby exists
     if (!user || !lobby) {
       return res.status(404).json({ message: "User or Lobby not found" });
     }
 
+    // Remove the user from the lobby
     await LobbyUser.destroy({
       where: { userId, lobbyId }
     });
 
     res.status(200).json({ message: "User left the lobby successfully" });
   } catch (error) {
-    console.error("Error leaving lobby:", error.message);
     res.status(500).json({
       message: "Error leaving lobby",
+      error: error.message
+    });
+  }
+});
+
+// Delete a lobby
+lobbyRouter.delete('/api/lobby', async (req, res) => {
+  const { lobbyId } = req.body;
+
+  try {
+    const lobby = await Lobby.findByPk(lobbyId);
+
+    // Check if lobby exists
+    if (!lobby) {
+      return res.status(404).json({ message: "Lobby not found" });
+    }
+
+    // Clear users from the lobby
+    await LobbyUser.destroy({ where: { lobbyId } });
+
+    // Delete the lobby
+    await Lobby.destroy({ where: { id: lobbyId } });
+
+    res.status(200).json({ message: "Lobby deleted successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting lobby",
       error: error.message
     });
   }

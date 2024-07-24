@@ -15,11 +15,16 @@ Backend Create:
   - `mkdir backend && cd backend`
   - `npm init`
   - `npm install eslint prettier socket.io --save-dev`
+  - `npm install --save-dev jest supertest`
+  - `npm install --save-dev babel-jest @babel/core @babel/preset-env`
+
 Backend Run:
   - Add `"type": "module",` to `package.json`
   - `npx nodemon server.js`
   - Or add `"dev": "npx nodemon server.js"` to `package.json`
   - `npm run dev`
+  - `npm test` for testing backend
+  - Kill process: `lsof -i :3000`, `kill -9 <PID>`
 
 Frontend Svelte Setup Project:
   - `npm init vite` and selecting the svelte option
