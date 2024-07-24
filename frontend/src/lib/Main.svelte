@@ -16,10 +16,8 @@
 </div>
 
 <div class="container">
-	<div class="start">
-		<Button text="Start Singleplayer" link="/game"></Button>
-		<Button text="Host Multiplayer" link="/lobby"></Button>
-	</div>
+	<Button text="Start Singleplayer" link="/game"></Button>
+	<Button text="Host Multiplayer" link="/lobby"></Button>
 	<div class="join">
 		<NumberInput />
 		<Button text="Join Lobby" link="/player"></Button>

@@ -1,6 +1,13 @@
 <script lang="ts">
+  import { codeStore } from "../../store";
   let code: string = "";
-  const onlyNumbers = () => (code = code.replace(/\D*(\d{0,4}).*/, "$1"));
+  $: codeStore.subscribe((value) => {
+    code = value;
+  });
+  const onlyNumbers = () => {
+    code = code.replace(/\D*(\d{0,4}).*/, "$1");
+    codeStore.set(code);
+  };
 </script>
 
 <div class="container1">
@@ -8,7 +15,7 @@
     <input
       class="container3"
       type="text"
-      placeholder="Enter the Code"
+      placeholder="Enter Code"
       bind:value={code}
       on:input={onlyNumbers}
     />
@@ -36,6 +43,7 @@
     background-color: #fcfdfb;
     padding: 10px;
     border: none;
+    width: 400px;
   }
 
   .container3:focus {

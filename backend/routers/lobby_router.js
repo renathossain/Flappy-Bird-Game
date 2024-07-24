@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { User } from "../models/users.js";
 import { Lobby, LobbyUser } from "../models/lobby.js";
+import { isLoggedIn } from "../middleware/auth.js";
 
 export const lobbyRouter = Router();
 
@@ -15,7 +16,7 @@ const generateUniqueCode = async () => {
 
 
 // Create a lobby
-lobbyRouter.post('/api/lobby', async (req, res) => {
+lobbyRouter.post('/api/lobby', isLoggedIn, async (req, res) => {
   try {
     // A user owns the lobby
     const { userId } = req.body;
@@ -51,7 +52,7 @@ lobbyRouter.post('/api/lobby', async (req, res) => {
 });
 
 // Join a lobby
-lobbyRouter.post('/api/lobby/join', async (req, res) => {
+lobbyRouter.post('/api/lobby/join', isLoggedIn, async (req, res) => {
   const { userId, lobbyId } = req.body;
 
   try {
@@ -94,7 +95,7 @@ lobbyRouter.post('/api/lobby/join', async (req, res) => {
 });
 
 // Leave a lobby
-lobbyRouter.delete('/api/lobby/leave', async (req, res) => {
+lobbyRouter.delete('/api/lobby/leave', isLoggedIn, async (req, res) => {
   const { userId, lobbyId } = req.body;
 
   try {
@@ -121,7 +122,7 @@ lobbyRouter.delete('/api/lobby/leave', async (req, res) => {
 });
 
 // Delete a lobby
-lobbyRouter.delete('/api/lobby', async (req, res) => {
+lobbyRouter.delete('/api/lobby', isLoggedIn, async (req, res) => {
   const { lobbyId } = req.body;
 
   try {
