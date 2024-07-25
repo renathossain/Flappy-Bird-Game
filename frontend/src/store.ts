@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-interface User {
+export interface User {
   id: string;
   displayName: string;
   email: string;

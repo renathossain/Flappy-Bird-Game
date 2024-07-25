@@ -4,41 +4,32 @@
   import { user } from "../store";
   import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
-  import { get } from "svelte/store";
 
   let socket: Socket;
-  let unsubscribeUser: () => void;
   let lobbyId: number | null = null;
   let players: { userId: number; givenName: string }[] = [];
 
   onMount(() => {
-    const checkAndConnect = () => {
-      const userData = get(user);
+    socket = io("http://localhost:3000");
 
-      if (userData) {
-        socket = io("http://localhost:3000");
-
-        socket.on("connect", () => {
-          socket.emit("lobby-create", userData.id);
-        });
-
-        socket.on(`lobby-send-code`, (code) => {
-          lobbyId = code;
-        });
-
-        socket.on(`lobby-send-players`, (data) => {
-          players = data;
-        });
+    socket.on("connect", () => {
+      if ($user) {
+        socket.emit("lobby-create", $user.id);
       }
-    };
+    });
 
-    unsubscribeUser = user.subscribe(checkAndConnect);
+    socket.on(`lobby-send-code`, (code) => {
+      lobbyId = code;
+    });
+
+    socket.on(`lobby-send-players`, (data) => {
+      players = data;
+    });
 
     return () => {
       if (socket) {
         socket.disconnect();
       }
-      unsubscribeUser();
     };
   });
 </script>

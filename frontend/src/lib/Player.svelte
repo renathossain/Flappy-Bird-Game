@@ -4,7 +4,6 @@
   import { user, code } from "../store";
   import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
-  import { get } from "svelte/store";
 
   let socket: Socket;
 
@@ -12,10 +11,12 @@
     socket = io("http://localhost:3000");
 
     socket.on("connect", () => {
-      socket.emit("lobby-join", {
-        userId: "109520711894316516317",
-        lobbyId: 1426,
-      });
+      if ($user && $code !== null) {
+        socket.emit("lobby-join", {
+          userId: $user.id,
+          lobbyId: $code,
+        });
+      }
     });
 
     return () => {
@@ -24,10 +25,14 @@
       }
     };
   });
+
+  function handleClick() {
+    // Add logic for BigButton click here if needed
+  }
 </script>
 
 <div class="container">
-  <BigButton text="Tap to Fly" onClick={() => {}} />
+  <BigButton text="Tap to Fly" onClick={handleClick} />
   <div class="controls">
     <Button text="Leave the Game" link="/" />
   </div>

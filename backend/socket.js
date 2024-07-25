@@ -130,10 +130,22 @@ export default function initializeSocket(server) {
     socket.on("disconnect", async () => {
       console.log(`Client disconnected: ${socket.id}`);
       try {
-        const deletedUser = await LobbyUser.destroy({ where: { socketId: socket.id } });
-        const lobby = await Lobby.findByPk(deletedUser.lobbyId);
-        if (lobby) {
-          io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
+        // Find the LobbyUser record associated with the disconnected socket
+        const lobbyUser = await LobbyUser.findOne({ where: { socketId: socket.id } });
+
+        if (lobbyUser) {
+          // Store the lobbyId before deleting the record
+          const { lobbyId } = lobbyUser;
+
+          // Delete the LobbyUser record
+          await LobbyUser.destroy({ where: { socketId: socket.id } });
+
+          // Fetch the lobby to get its socketId
+          const lobby = await Lobby.findByPk(lobbyId);
+          if (lobby) {
+            // Emit updated player list to all clients in the lobby
+            io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
+          }
         }
       } catch (error) {
         console.error("Error deleting lobby:", error);
