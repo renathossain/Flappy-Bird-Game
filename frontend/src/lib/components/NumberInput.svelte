@@ -1,12 +1,16 @@
 <script lang="ts">
-  import { codeStore } from "../../store";
-  let code: string = "";
-  $: codeStore.subscribe((value) => {
-    code = value;
+  import { code } from "../../store";
+  let codeValue: string = "";
+
+  // Subscribe to the store and initialize codeValue
+  $: code.subscribe((value) => {
+    codeValue = value !== null ? value.toString() : "";
   });
+
   const onlyNumbers = () => {
-    code = code.replace(/\D*(\d{0,4}).*/, "$1");
-    codeStore.set(code);
+    // Keep only the first 4 digits and update the store
+    codeValue = codeValue.replace(/\D*(\d{0,4}).*/, "$1");
+    code.set(codeValue !== "" ? Number(codeValue) : null);
   };
 </script>
 
@@ -16,7 +20,7 @@
       class="container3"
       type="text"
       placeholder="Enter Code"
-      bind:value={code}
+      bind:value={codeValue}
       on:input={onlyNumbers}
     />
   </div>

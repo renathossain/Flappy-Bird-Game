@@ -9,6 +9,7 @@ export const Lobby = sequelize.define("lobbies", {
     primaryKey: true,
     autoIncrement: false,
   },
+  // Owner of the lobby
   userId: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -17,7 +18,12 @@ export const Lobby = sequelize.define("lobbies", {
       key: 'id',
     },
     unique: true,
-  }
+  },
+  socketId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
 });
 
 // LobbyUser model (junction table)
@@ -40,6 +46,11 @@ export const LobbyUser = sequelize.define("lobby_users", {
       key: 'id',
     },
     primaryKey: true,
+  },
+  socketId: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
   },
 });
 

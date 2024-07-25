@@ -1,43 +1,59 @@
-<script>
+<script lang="ts">
+  import BigButton from "./components/BigButton.svelte";
+  import Button from "./components/Button.svelte";
+  import { user, code } from "../store";
   import { onMount } from "svelte";
-  import io from "socket.io-client";
+  import io, { Socket } from "socket.io-client";
 
-  // Initialize constants
-  export let username;
-  export let lobbyId;
-  const socket = io("http://localhost:3000");
+  let socket: Socket;
 
-  // Make your flappy jump
-  const jumpFunction = () => {
-    socket.emit("jump", username);
-  };
-
-  // Adding event listener for spacebar on mount
   onMount(() => {
-    window.addEventListener("keydown", (event) => {
-      if (event.key === " " || event.key === "Spacebar") {
-        jumpFunction();
+    const unsubscribe = user.subscribe((userData) => {
+      if (userData) {
+        socket = io("http://localhost:3000");
       }
     });
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+      unsubscribe();
+    };
   });
+
+  // if (userData && codeData !== null) {
+  //   socket.on("connect", () => {
+  //     socket.emit("lobby-join", { userId: userData.id, lobbyId: codeData });
+  //   });
+  // }
+
+  // // Make your flappy jump
+  // const jumpFunction = () => {
+  //   socket.emit("jump", 1);
+  // };
+
+  // // Adding event listener for spacebar on mount
+  // onMount(() => {
+  //   window.addEventListener("keydown", (event) => {
+  //     if (event.key === " " || event.key === "Spacebar") {
+  //       jumpFunction();
+  //     }
+  //   });
+  // });
 </script>
 
 <div class="container">
-  <button on:click={jumpFunction}>Tap to Fly</button>
+  <BigButton text="Tap to Fly" onClick={() => {}} />
+  <div class="controls">
+    <Button text="Leave the Game" link="/" />
+  </div>
 </div>
 
 <style>
-  .container {
+  .controls {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
-
-  button {
-    height: 80%;
-    width: 80%;
-    display: block;
-    font-size: 80px;
+    justify-content: flex-end;
+    column-gap: 20px;
   }
 </style>

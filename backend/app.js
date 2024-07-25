@@ -57,7 +57,6 @@ const startServer = async () => {
     // Routes
     app.use("/", authRouter);
     app.use("/", userRouter);
-    app.use("/", lobbyRouter);
 
     // Start server and initialize Socket.IO
     const server = app.listen(PORT, () => {

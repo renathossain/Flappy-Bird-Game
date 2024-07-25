@@ -1,47 +1,34 @@
 <script lang="ts">
-  import { onMount, onDestroy } from "svelte";
   import Button from "./components/Button.svelte";
   import Avatar from "./components/Avatar.svelte";
   import { user } from "../store";
-  import { get } from "svelte/store";
+  import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
 
-  let lobbyId: number | null = null;
-  const userData = get(user);
-
   let socket: Socket;
-
-  function initializeSocket() {
-    if (userData) {
-      socket = io("http://localhost:3000");
-
-      socket.on("connect", () => {
-        console.log("Socket connected");
-        socket.emit("lobby-create", userData.id);
-      });
-
-      socket.on("lobby-send-code", (code) => {
-        console.log(`Received lobby code: ${code}`);
-        lobbyId = code;
-      });
-
-      socket.on("error", (message) => {
-        console.error(`Socket error: ${message}`);
-      });
-
-      socket.on("disconnect", () => {
-        console.warn("Socket disconnected");
-      });
-    }
-  }
+  let lobbyId: number | null = null;
+  let players: { userId: number; userName: string }[] = [];
 
   onMount(() => {
-    initializeSocket();
+    const unsubscribe = user.subscribe((userData) => {
+      if (userData) {
+        socket = io("http://localhost:3000");
+
+        socket.on("connect", () => {
+          socket.emit("lobby-create", userData.id);
+        });
+
+        socket.on(`lobby-send-code-${userData.id}`, (code) => {
+          lobbyId = code;
+        });
+      }
+    });
 
     return () => {
       if (socket) {
         socket.disconnect();
       }
+      unsubscribe();
     };
   });
 </script>
@@ -49,9 +36,9 @@
 <div class="container">
   <div class="retro-container code">Code: {lobbyId}</div>
   <div class="players">
-    <!-- {#each playerUsernames as username}
-      <Avatar {username} />
-    {/each} -->
+    {#each players as { userId, userName }}
+      <Avatar username={userName} />
+    {/each}
   </div>
   <div class="controls">
     <Button text="Destroy Lobby" link="/"></Button>
