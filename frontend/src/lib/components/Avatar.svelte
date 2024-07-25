@@ -1,10 +1,11 @@
 <script lang="ts">
-  export let username;
+  export let givenName: string;
+  export let currentSkin: number;
 </script>
 
 <div class="container">
-  <div class="username">{username}</div>
-  <img src="/assets/flappies/1.png" alt="Flappy" />
+  <div class="username">{givenName}</div>
+  <img src="/assets/flappies/{currentSkin}.png" alt="Flappy" />
 </div>
 
 <style>

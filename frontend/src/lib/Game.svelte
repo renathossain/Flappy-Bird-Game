@@ -1,10 +1,10 @@
 <script lang="ts">
   import Konva from "konva";
   import { onMount, onDestroy } from "svelte";
-  import io from "socket.io-client";
+  import { Socket } from "socket.io-client";
 
-  // Create Socket
-  const socket = io("http://localhost:3000");
+  // Imported variables
+  export let socket: Socket | null = null;
 
   // Magic Constants
   const flappyRightOffset = window.innerHeight / 10;

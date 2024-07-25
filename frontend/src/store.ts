@@ -7,7 +7,7 @@ export interface User {
   familyName: string;
   givenName: string;
   photo: string;
-  current_skin: number;
+  currentSkin: number;
 }
 export const user = writable<User | null>(null);
 

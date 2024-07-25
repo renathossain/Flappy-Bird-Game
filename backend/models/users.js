@@ -28,7 +28,7 @@ export const User = sequelize.define("users", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  current_skin: {
+  currentSkin: {
     type: DataTypes.INTEGER,
     allowNull: true,
     references: {

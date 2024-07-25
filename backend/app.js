@@ -6,7 +6,6 @@ import passport from 'passport'
 import dotenv from "dotenv";
 import { authRouter } from "./routers/auth_router.js";
 import { userRouter } from "./routers/user_router.js";
-import { lobbyRouter } from "./routers/lobby_router.js";
 import { sequelize } from "./datasource.js";
 import { Skin } from "./models/skins.js";
 import { User, PurchasedSkins } from "./models/users.js";

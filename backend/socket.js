@@ -16,12 +16,13 @@ const getLobbyPlayers = async (lobbyId) => {
   try {
     const players = await LobbyUser.findAll({
       where: { lobbyId },
-      include: { model: User, attributes: ['id', 'givenName'] }
+      include: { model: User, attributes: ['id', 'givenName', 'currentSkin'] }
     });
 
     return players.map(player => ({
       userId: player.userId,
-      givenName: player.user.givenName
+      givenName: player.user.givenName,
+      currentSkin: player.user.currentSkin
     }));
   } catch (error) {
     console.error("Error fetching lobby players:", error);

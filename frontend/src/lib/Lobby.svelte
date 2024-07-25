@@ -1,13 +1,16 @@
 <script lang="ts">
   import Button from "./components/Button.svelte";
   import Avatar from "./components/Avatar.svelte";
+  import Game from "./Game.svelte";
   import { user } from "../store";
   import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
 
   let socket: Socket;
   let lobbyId: number | null = null;
-  let players: { userId: number; givenName: string }[] = [];
+  let players: { userId: number; givenName: string; currentSkin: number }[] =
+    [];
+  let gameStarted: boolean = false;
 
   onMount(() => {
     socket = io("http://localhost:3000");
@@ -34,21 +37,25 @@
   });
 </script>
 
-<div class="container">
-  <div class="retro-container code">Code: {lobbyId}</div>
-  <div class="players">
-    {#each players as { givenName }}
-      <Avatar username={givenName} />
-    {/each}
+{#if gameStarted}
+  <Game />
+{:else}
+  <div class="lobby-container">
+    <div class="retro-container code">Code: {lobbyId}</div>
+    <div class="players">
+      {#each players as { givenName, currentSkin }}
+        <Avatar {givenName} {currentSkin} />
+      {/each}
+    </div>
+    <div class="controls">
+      <Button text="Destroy Lobby" link="/"></Button>
+      <Button text="Start Game" link="/game"></Button>
+    </div>
   </div>
-  <div class="controls">
-    <Button text="Destroy Lobby" link="/"></Button>
-    <Button text="Start Game" link="/game"></Button>
-  </div>
-</div>
+{/if}
 
 <style>
-  .container {
+  .lobby-container {
     width: 90vw;
     height: 80vh;
     margin: 20px;
