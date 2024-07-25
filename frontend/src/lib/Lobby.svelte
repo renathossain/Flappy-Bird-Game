@@ -9,7 +9,7 @@
   let socket: Socket;
   let unsubscribeUser: () => void;
   let lobbyId: number | null = null;
-  let players: { userId: number; userName: string }[] = [];
+  let players: { userId: number; givenName: string }[] = [];
 
   onMount(() => {
     const checkAndConnect = () => {
@@ -18,16 +18,16 @@
       if (userData) {
         socket = io("http://localhost:3000");
 
-        socket.on("asdasd", () => {
-          alert("Recieved");
-        });
-
         socket.on("connect", () => {
           socket.emit("lobby-create", userData.id);
         });
 
-        socket.on(`lobby-send-code-${userData.id}`, (code) => {
+        socket.on(`lobby-send-code`, (code) => {
           lobbyId = code;
+        });
+
+        socket.on(`lobby-send-players`, (data) => {
+          players = data;
         });
       }
     };
@@ -46,8 +46,8 @@
 <div class="container">
   <div class="retro-container code">Code: {lobbyId}</div>
   <div class="players">
-    {#each players as { userId, userName }}
-      <Avatar username={userName} />
+    {#each players as { givenName }}
+      <Avatar username={givenName} />
     {/each}
   </div>
   <div class="controls">

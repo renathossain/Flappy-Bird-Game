@@ -11,6 +11,24 @@ const generateUniqueCode = async () => {
   return code;
 };
 
+// Fetch all players of the lobby
+const getLobbyPlayers = async (lobbyId) => {
+  try {
+    const players = await LobbyUser.findAll({
+      where: { lobbyId },
+      include: { model: User, attributes: ['id', 'givenName'] }
+    });
+
+    return players.map(player => ({
+      userId: player.userId,
+      givenName: player.user.givenName
+    }));
+  } catch (error) {
+    console.error("Error fetching lobby players:", error);
+    throw error;
+  }
+};
+
 export default function initializeSocket(server) {
   const io = new Server(server, {
     cors: {
@@ -39,7 +57,8 @@ export default function initializeSocket(server) {
         if (existingLobby) {
           // Update the socketId with the new socket.id
           await existingLobby.update({ socketId: socket.id });
-          socket.emit(`lobby-send-code-${userId}`, existingLobby.id);
+          socket.emit(`lobby-send-code`, existingLobby.id);
+          socket.emit(`lobby-send-players`, await getLobbyPlayers(existingLobby.id));
           console.log(`Lobby found: ${existingLobby.id}`);
           return;
         }
@@ -50,7 +69,8 @@ export default function initializeSocket(server) {
         // Create a new lobby with a unique 4-digit code
         const newLobby = await Lobby.create({ id: uniqueCode, userId, socketId: socket.id });
 
-        socket.emit(`lobby-send-code-${userId}`, newLobby.id);
+        socket.emit(`lobby-send-code`, newLobby.id);
+        socket.emit(`lobby-send-players`, await getLobbyPlayers(newLobby.id));
         console.log(`Lobby created: ${newLobby.id}`);
       } catch (error) {
         console.error("Error creating lobby:", error);
@@ -60,7 +80,6 @@ export default function initializeSocket(server) {
 
     socket.on("lobby-join", async (data) => {
       try {
-
         const { userId, lobbyId } = data;
 
         // Check if user exists
@@ -92,15 +111,15 @@ export default function initializeSocket(server) {
           where: { userId, lobbyId: lobby.id }
         });
         if (existingMembership) {
-          socket.emit(`asdasd`);
           await existingMembership.update({ socketId: socket.id });
+          io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
           console.log(`User already joined lobby: ${socket.id}`);
           return;
         }
 
         // Add the user to the lobby
         await LobbyUser.create({ userId, lobbyId: lobby.id, socketId: socket.id });
-        socket.emit(`asdasd`);
+        io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
         console.log(`User joined lobby: ${socket.id}`);
       } catch (error) {
         console.error("Error joining lobby:", error);
@@ -111,7 +130,11 @@ export default function initializeSocket(server) {
     socket.on("disconnect", async () => {
       console.log(`Client disconnected: ${socket.id}`);
       try {
-        await LobbyUser.destroy({ where: { socketId: socket.id } });
+        const deletedUser = await LobbyUser.destroy({ where: { socketId: socket.id } });
+        const lobby = await Lobby.findByPk(deletedUser.lobbyId);
+        if (lobby) {
+          io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
+        }
       } catch (error) {
         console.error("Error deleting lobby:", error);
       }

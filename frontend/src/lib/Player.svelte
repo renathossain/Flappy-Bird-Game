@@ -18,10 +18,6 @@
       });
     });
 
-    socket.on("asdasd", () => {
-      alert("Recieved");
-    });
-
     return () => {
       if (socket) {
         socket.disconnect();

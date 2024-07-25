@@ -57,3 +57,7 @@ export const LobbyUser = sequelize.define("lobby_users", {
 // Establish relationships
 Lobby.belongsToMany(User, { through: LobbyUser, foreignKey: 'lobbyId' });
 User.belongsToMany(Lobby, { through: LobbyUser, foreignKey: 'userId' });
+LobbyUser.belongsTo(Lobby, { foreignKey: 'lobbyId' });
+LobbyUser.belongsTo(User, { foreignKey: 'userId' });
+Lobby.hasMany(LobbyUser, { foreignKey: 'lobbyId' });
+User.hasMany(LobbyUser, { foreignKey: 'userId' });
