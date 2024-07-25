@@ -4,15 +4,23 @@
   import { user } from "../store";
   import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
+  import { get } from "svelte/store";
 
   let socket: Socket;
+  let unsubscribeUser: () => void;
   let lobbyId: number | null = null;
   let players: { userId: number; userName: string }[] = [];
 
   onMount(() => {
-    const unsubscribe = user.subscribe((userData) => {
+    const checkAndConnect = () => {
+      const userData = get(user);
+
       if (userData) {
         socket = io("http://localhost:3000");
+
+        socket.on("asdasd", () => {
+          alert("Recieved");
+        });
 
         socket.on("connect", () => {
           socket.emit("lobby-create", userData.id);
@@ -22,13 +30,15 @@
           lobbyId = code;
         });
       }
-    });
+    };
+
+    unsubscribeUser = user.subscribe(checkAndConnect);
 
     return () => {
       if (socket) {
         socket.disconnect();
       }
-      unsubscribe();
+      unsubscribeUser();
     };
   });
 </script>

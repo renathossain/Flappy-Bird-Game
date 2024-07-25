@@ -29,6 +29,8 @@ export default function initializeSocket(server) {
         // Check if user exists
         const user = await User.findByPk(userId);
         if (!user) {
+          console.log(`User not found: ${socket.id}`);
+          socket.emit("lobby-error", { message: "User not found" });
           return;
         }
 
@@ -52,25 +54,28 @@ export default function initializeSocket(server) {
         console.log(`Lobby created: ${newLobby.id}`);
       } catch (error) {
         console.error("Error creating lobby:", error);
+        socket.emit("lobby-error", { message: "Error creating lobby" });
       }
     });
 
     socket.on("lobby-join", async (data) => {
       try {
-        const userId = data.userId;
-        const lobbyId = data.lobbyId;
+
+        const { userId, lobbyId } = data;
 
         // Check if user exists
-        const user = await User.findByPk(userId);
+        const user = User.findByPk(userId);
         if (!user) {
           console.log(`User not found: ${socket.id}`);
+          socket.emit("lobby-error", { message: "User not found" });
           return;
         }
 
         // Check if lobby exists
-        const lobby = await Lobby.findOne({ where: { id: lobbyId } });
+        const lobby = await Lobby.findByPk(lobbyId);
         if (!lobby) {
           console.log(`Lobby not found: ${socket.id}`);
+          socket.emit("lobby-error", { message: "Lobby not found" });
           return;
         }
 
@@ -78,6 +83,7 @@ export default function initializeSocket(server) {
         const userCount = await LobbyUser.count({ where: { lobbyId: lobby.id } });
         if (userCount >= 4) {
           console.log(`Lobby full: ${socket.id}`);
+          socket.emit("lobby-error", { message: "Lobby is full" });
           return;
         }
 
@@ -86,19 +92,19 @@ export default function initializeSocket(server) {
           where: { userId, lobbyId: lobby.id }
         });
         if (existingMembership) {
+          socket.emit(`asdasd`);
           await existingMembership.update({ socketId: socket.id });
           console.log(`User already joined lobby: ${socket.id}`);
           return;
         }
 
+        // Add the user to the lobby
         await LobbyUser.create({ userId, lobbyId: lobby.id, socketId: socket.id });
-        socket.emit(`lobby-send-player-${lobbyId}`, {
-          userId: user.id,
-          userName: user.name
-        });
+        socket.emit(`asdasd`);
         console.log(`User joined lobby: ${socket.id}`);
       } catch (error) {
         console.error("Error joining lobby:", error);
+        socket.emit("lobby-error", { message: "Error joining lobby" });
       }
     });
 
