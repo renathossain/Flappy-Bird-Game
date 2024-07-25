@@ -6,39 +6,13 @@
 	import { user, codeStore } from "../store";
 	import { get } from "svelte/store";
 
-	async function createLobby() {
-		const currentUser = get(user);
-		if (currentUser) {
-			try {
-				// Make a POST request to /api/lobby
-				const response = await fetch("/api/lobby", {
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ userId: currentUser.id }),
-				});
-
-				// Check if the response is okay
-				if (!response.ok) {
-					throw new Error("Failed to create lobby");
-				}
-
-				// Parse the response as JSON
-				const data = await response.json();
-
-				// Extract the id from the response
-				const { lobbyId } = data;
-
-				// Redirect to /lobby/{lobbyId} using svelte-routing
-				navigate(`/lobby/${lobbyId}`);
-			} catch (error) {
-				console.error("Error:", error);
-			}
+	const gotoLobby = () => {
+		if ($user) {
+			navigate("/lobby");
 		} else {
-			alert("Please log in to create a lobby.");
+			alert("Login to create a lobby.");
 		}
-	}
+	};
 </script>
 
 <div class="header">
@@ -53,7 +27,7 @@
 
 <div class="container">
 	<Button text="Start Singleplayer" link="/game"></Button>
-	<Button text="Host Multiplayer" onClick={createLobby} />
+	<Button text="Host Multiplayer" onClick={gotoLobby} />
 	<div class="join">
 		<NumberInput />
 		<Button text="Join Lobby" link="/player/{$codeStore}"></Button>

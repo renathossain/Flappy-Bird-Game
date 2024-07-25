@@ -16,11 +16,7 @@
 
 <Router>
   <Route path="/" component={Main} />
-  <Route path="/lobby/:lobbyId" let:params>
-    <Lobby lobbyId={params.lobbyId} />
-  </Route>
+  <Route path="/lobby" component={Lobby} />
   <Route path="/game" component={Game} />
-  <Route path="/player/:lobbyId" let:params>
-    <Player lobbyId="{params.lobbyId}," username="1" />
-  </Route>
+  <Route path="/player" component={Player} />
 </Router>
