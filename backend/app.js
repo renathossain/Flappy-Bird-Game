@@ -6,6 +6,7 @@ import passport from 'passport'
 import dotenv from "dotenv";
 import { authRouter } from "./routers/auth_router.js";
 import { userRouter } from "./routers/user_router.js";
+import { lobbyRouter } from "./routers/lobby_router.js";
 import { sequelize } from "./datasource.js";
 import { Skin } from "./models/skins.js";
 import { User, PurchasedSkins } from "./models/users.js";
@@ -46,6 +47,8 @@ const startServer = async () => {
     await PurchasedSkins.sync();
     await Lobby.sync();
     await LobbyUser.sync();
+    await sequelize.query('TRUNCATE TABLE "lobby_users" CASCADE');
+    await sequelize.query('TRUNCATE TABLE "lobbies" CASCADE');
     await sequelize.sync({ alter: { drop: false } });
     console.log("Connection has been established successfully.");
 
@@ -56,6 +59,7 @@ const startServer = async () => {
     // Routes
     app.use("/", authRouter);
     app.use("/", userRouter);
+    app.use("/", lobbyRouter);
 
     // Start server and initialize Socket.IO
     const server = app.listen(PORT, () => {

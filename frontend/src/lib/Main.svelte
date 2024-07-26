@@ -3,7 +3,7 @@
 	import Button from "./components/Button.svelte";
 	import NumberInput from "./components/NumberInput.svelte";
 	import ProfilePic from "./components/ProfilePic.svelte";
-	import { user } from "../store";
+	import { user, code } from "../store";
 
 	const gotoLobby = () => {
 		if ($user) {
@@ -13,9 +13,28 @@
 		}
 	};
 
-	const joinLobby = () => {
-		if ($user) {
-			navigate("/player");
+	const joinLobby = async () => {
+		if ($user && $code !== null) {
+			if ($code !== null && /^\d{4}$/.test($code.toString())) {
+				const res = await fetch("/api/lobby/join", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						userId: $user.id,
+						lobbyId: $code,
+					}),
+				});
+				const data = await res.json();
+				if (data.error) {
+					alert(data.error);
+				} else {
+					navigate("/player");
+				}
+			} else {
+				alert("Enter a valid 4-digit code.");
+			}
 		} else {
 			alert("Login to join lobby.");
 		}
