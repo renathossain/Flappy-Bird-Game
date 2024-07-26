@@ -2,6 +2,7 @@
   import Konva from "konva";
   import { onMount, onDestroy } from "svelte";
   import { Socket } from "socket.io-client";
+  import { navigate } from "svelte-routing";
 
   // Imported variables
   export let socket: Socket | null = null;
@@ -36,6 +37,7 @@
     imageObj: HTMLImageElement;
     downVelocity: number;
     playing: boolean;
+    score: number;
   };
 
   const flappies = players.map((data) => {
@@ -55,6 +57,7 @@
       imageObj: imgObj,
       downVelocity: 0,
       playing: true,
+      score: 0,
     };
   });
 
@@ -73,19 +76,18 @@
   const scoreTextConfig = {
     x: 10,
     y: 10,
-    text: "Score: 0",
+    text: "",
     fontSize: 30,
     fontFamily: "Arial",
     fill: "#000",
   };
 
   const topTextConfig = {
-    x: window.innerWidth / 2 - 100,
-    y: window.innerHeight / 2,
     text: "",
     fontSize: 40,
     fontFamily: "Arial",
     fill: "#000",
+    align: "center",
   };
 
   // Pipe Data Structures
@@ -144,6 +146,20 @@
     );
   }
 
+  // Display leaderboard
+  function displayLeaderboard(scoreText: Konva.Text) {
+    if (socket) {
+      const leaderboard = flappies
+        .sort((a, b) => b.score - a.score) // Sort by score descending
+        .map((flappy) => `${flappy.givenName}: ${flappy.score}`)
+        .join("\n");
+
+      scoreText.text(`Leaderboard\n${leaderboard}`);
+    } else {
+      scoreText.text(`Score: ${score}`);
+    }
+  }
+
   onMount(() => {
     // Stage Initialization
     const stage = new Konva.Stage(StageConfig);
@@ -154,24 +170,38 @@
 
     // Add Flappy and Text Sprites
     const scoreText = new Konva.Text(scoreTextConfig);
+    displayLeaderboard(scoreText);
     const topText = new Konva.Text(topTextConfig);
+
+    // Draw topText
+    function drawTopText(text: string) {
+      topText.text(text);
+      topText.position({
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      });
+      topText.offsetX(topText.width() / 2);
+      topText.offsetY(topText.height() / 2);
+      layerTop.add(topText);
+      layerTop.draw();
+    }
+
+    topText.position({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    });
+    topText.offsetX(topText.width() / 2);
+    topText.offsetY(topText.height() / 2);
     flappies.forEach((flappy) => {
       flappy.imageObj.onload = () => {
         layer.add(flappy.imageKonva);
       };
     });
     layerTop.add(scoreText);
-    layerTop.add(topText);
-    layerTop.draw();
 
     async function startCountdown() {
-      const updateText = (text: string) => {
-        topText.text(text);
-        layerTop.draw();
-      };
-
       for (let countdown = 3; countdown >= 0; countdown--) {
-        updateText(countdown > 0 ? countdown.toString() : "Go!");
+        drawTopText(countdown > 0 ? countdown.toString() : "Go!");
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
@@ -187,13 +217,14 @@
 
     // Create Animation
     const anim = new Konva.Animation(() => {
+      displayLeaderboard(scoreText);
+
       // Function to stop the game
       function stopGame() {
         gameOver = true;
         gameRunning = false;
         anim.stop();
-        topText.text("Game Over");
-        layerTop.add(topText);
+        drawTopText("Game Over");
       }
 
       // If flappy is out and the last one, stop the game
@@ -222,6 +253,7 @@
             x: flappy.imageKonva.x(),
             y: Math.max(Math.min(newY, ground), ceiling),
           });
+          flappy.score = score;
         } else {
           // If flappy is out and not last, it gets sweeped out
           flappy.imageKonva.position({
@@ -275,7 +307,7 @@
           !pair.passed
         ) {
           pair.passed = true;
-          scoreText.text(`Score: ${++score}`);
+          score++;
         }
 
         // Remove pipes that are off-screen
@@ -300,20 +332,17 @@
       startCountdown();
     } else {
       // Display the start message for single-player
-      topText.text("Press Space to Start");
-      layerTop.draw();
+
+      drawTopText("Game Over");
     }
 
     // Handle spacebar events
     window.addEventListener("keydown", (event) => {
       if (!gameRunning && !gameOver) {
         if (event.key === " ") {
-          if (!socket) {
-            // Start game for single-player
-            gameRunning = true;
-            topText.remove();
-            anim.start();
-          }
+          gameRunning = true;
+          topText.remove();
+          anim.start();
         }
       }
 
@@ -325,20 +354,49 @@
         }
       }
 
+      if (!gameRunning && gameOver) {
+        if (event.key === " ") {
+          window.location.reload();
+        }
+      }
+
       // Pause game when Escape is pressed
       if (event.key === "Escape") {
         if (gameRunning && !gameOver) {
           gameRunning = false;
           anim.stop();
-          topText.text("Paused");
-          layerTop.add(topText);
+          drawTopText("Paused");
         }
+      }
+    });
+
+    const container = document.getElementById("container");
+    container?.addEventListener("click", () => {
+      if (!gameRunning && !gameOver) {
+        // Start game for single-player
+        gameRunning = true;
+        topText.remove();
+        anim.start();
+      }
+
+      if (gameRunning && !gameOver) {
+        if (!socket) {
+          // Handle tap events for single-player
+          flappies[0].downVelocity = flappyJumpHeight;
+        }
+      }
+
+      if (!gameRunning && gameOver) {
+        window.location.reload();
       }
     });
 
     onDestroy(() => {
       if (anim) {
         anim.stop();
+      }
+      if (stage) {
+        stage.destroy();
       }
     });
   });

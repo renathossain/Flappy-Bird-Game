@@ -14,12 +14,12 @@
     givenName: string;
     currentSkin: number;
   }[] = [];
-  let gameStarted: boolean = false;
   let authorized = false;
+  let inGame = false;
 
   const startGame = () => {
     if (players.length >= 2) {
-      gameStarted = true;
+      inGame = true;
     } else {
       alert("Need at least 2 people to start.");
     }
@@ -60,9 +60,9 @@
   });
 </script>
 
-{#if gameStarted && $host && authorized}
+{#if inGame && $host && authorized}
   <Game {socket} {players} />
-{:else if !gameStarted && $host && authorized}
+{:else if !inGame && $host && authorized}
   <div class="lobby-container">
     <div class="retro-container code">Code: {$host}</div>
     <div class="players">
