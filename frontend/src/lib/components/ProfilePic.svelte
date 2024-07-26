@@ -20,9 +20,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
   }
 
   .container1 {
+    width: 100%;
     background-color: #553000;
     padding: 5px 5px 10px 5px;
   }
@@ -41,8 +43,8 @@
   }
 
   .profile-picture {
-    width: 10vmin;
-    height: 10vmin;
+    width: 12vmin;
+    height: 12vmin;
     border-radius: 50%;
   }
 

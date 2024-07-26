@@ -30,7 +30,7 @@
   .button-link {
     display: inline-block;
     text-decoration: none;
-    margin-bottom: 20px;
+    white-space: nowrap;
   }
 
   .container1 {

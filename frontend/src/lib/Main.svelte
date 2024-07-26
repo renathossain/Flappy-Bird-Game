@@ -62,8 +62,10 @@
 
 <div class="header">
 	{#if $user}
-		<Button text="Buy/Change Skins" link="/store" />
-		<Button text="Sign Out" link="/auth/logout" />
+		<div class="auth">
+			<Button text="Sign Out" link="/auth/logout" />
+			<Button text="Skins" link="/store" />
+		</div>
 		<ProfilePic />
 	{:else}
 		<Button text="Sign In" link="/auth/google" />
@@ -92,5 +94,12 @@
 	.container {
 		display: flex;
 		flex-direction: column;
+		row-gap: 20px;
+	}
+
+	.auth {
+		display: flex;
+		flex-direction: column;
+		row-gap: 10px;
 	}
 </style>
