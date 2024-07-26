@@ -5,6 +5,11 @@
 
   // Imported variables
   export let socket: Socket | null = null;
+  export let players: {
+    userId: number;
+    givenName: string;
+    currentSkin: number;
+  }[] = [];
 
   // Magic Constants
   const flappyRightOffset = window.innerHeight / 10;
@@ -17,25 +22,19 @@
   const pipeMovementSpeed = window.innerHeight / 250;
   const pipeHorizontalGap = window.innerHeight / 2;
 
-  // Flappies Constants
-  const noOfFlappies = 3;
-  const flappyData = [
-    "/assets/flappies/1.png",
-    "/assets/flappies/2.png",
-    "assets/flappies/3.png",
-  ];
-
   // Flappies Data Structure
   type FlappyObject = {
+    userId: number;
+    givenName: string;
     imageKonva: Konva.Image;
     imageObj: HTMLImageElement;
     downVelocity: number;
     playing: boolean;
   };
 
-  const flappies = flappyData.slice(0, noOfFlappies).map((data) => {
+  const flappies = players.map((data) => {
     const imgObj = new Image();
-    imgObj.src = data;
+    imgObj.src = `/assets/flappies/${data.currentSkin}.png`;
     const imageKonva = new Konva.Image({
       x: flappyRightOffset,
       y: window.innerHeight / 2,
@@ -44,6 +43,8 @@
       height: flappyHeight,
     });
     return {
+      userId: data.userId,
+      givenName: data.givenName,
       imageKonva: imageKonva,
       imageObj: imgObj,
       downVelocity: 0,
@@ -214,13 +215,15 @@
       }
 
       // Animate all flappies
-      flappies.forEach((flappy, index) => {
+      flappies.forEach((flappy) => {
         animateFlappy(flappy);
 
-        // Flappy jumps upon recieving signal
-        socket.on(`jump-${index}`, () => {
-          flappy.downVelocity = flappyJumpHeight;
-        });
+        if (socket) {
+          // Flappy jumps upon recieving signal
+          socket.on(`jump-${flappy.userId}`, () => {
+            flappy.downVelocity = flappyJumpHeight;
+          });
+        }
       });
 
       pipePairs.forEach((pair) => {

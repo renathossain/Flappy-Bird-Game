@@ -8,9 +8,16 @@
 
   let socket: Socket;
   let lobbyId: number | null = null;
-  let players: { userId: number; givenName: string; currentSkin: number }[] =
-    [];
+  let players: {
+    userId: number;
+    givenName: string;
+    currentSkin: number;
+  }[] = [];
   let gameStarted: boolean = false;
+
+  const startGame = () => {
+    gameStarted = true;
+  };
 
   onMount(() => {
     socket = io("http://localhost:3000");
@@ -38,7 +45,7 @@
 </script>
 
 {#if gameStarted}
-  <Game />
+  <Game {socket} {players} />
 {:else}
   <div class="lobby-container">
     <div class="retro-container code">Code: {lobbyId}</div>
@@ -49,7 +56,7 @@
     </div>
     <div class="controls">
       <Button text="Destroy Lobby" link="/"></Button>
-      <Button text="Start Game" link="/game"></Button>
+      <Button text="Start Game" onClick={startGame}></Button>
     </div>
   </div>
 {/if}

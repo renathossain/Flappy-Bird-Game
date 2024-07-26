@@ -128,6 +128,16 @@ export default function initializeSocket(server) {
       }
     });
 
+    socket.on("jump", async (data) => {
+      const { userId, lobbyId } = data;
+
+      // Find the lobby
+      const lobby = await Lobby.findByPk(lobbyId);
+      if (lobby) {
+        io.to(lobby.socketId).emit(`jump-${userId}`);
+      }
+    });
+
     socket.on("disconnect", async () => {
       console.log(`Client disconnected: ${socket.id}`);
       try {
