@@ -2,6 +2,12 @@
   export let text: string;
   export let link: string | null = null;
   export let onClick: (() => void) | null = null;
+
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === " ") {
+      event.preventDefault();
+    }
+  }
 </script>
 
 {#if link}
@@ -15,7 +21,7 @@
     </div>
   </a>
 {:else if onClick}
-  <button class="button-link" on:click={onClick}>
+  <button class="button-link" on:click={onClick} on:keydown={handleKeyDown}>
     <div class="container1">
       <div class="container2">
         <div class="container3">
