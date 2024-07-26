@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Router, Route } from "svelte-routing";
+  import Protected from "./lib/Protected.svelte";
   import Main from "./lib/Main.svelte";
   import Lobby from "./lib/Lobby.svelte";
   import Game from "./lib/Game.svelte";
@@ -16,7 +17,7 @@
 
 <Router>
   <Route path="/" component={Main} />
-  <Route path="/lobby" component={Lobby} />
+  <Protected path="/lobby" component={Lobby} />
   <Route path="/game" component={Game} />
-  <Route path="/player" component={Player} />
+  <Protected path="/player" component={Player} />
 </Router>
