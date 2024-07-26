@@ -10,11 +10,6 @@
     "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
   },
   "devDependencies": {
-    "@melt-ui/pp": "^0.3.2",
-    "@melt-ui/svelte": "^0.83.0",
-    "@smui/button": "^7.0.0",
-    "@smui/dialog": "^7.0.0",
-    "@smui/textfield": "^7.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tsconfig/svelte": "^5.0.4",
     "eslint": "^9.7.0",
