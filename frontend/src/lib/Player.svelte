@@ -3,18 +3,29 @@
   import Button from "./components/Button.svelte";
   import Unauthorized from "./Unauthorized.svelte";
   import { user, code } from "../store";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import io, { Socket } from "socket.io-client";
 
   let socket: Socket;
   let jumpFunction = () => {};
   let lobbySocket: string | null = null;
 
+  const setupJumpFunction = () => {
+    jumpFunction = () => {
+      if ($user && lobbySocket) {
+        socket.emit("jump", {
+          userId: $user.id,
+          lobbySocket: lobbySocket,
+        });
+      }
+    };
+  };
+
   onMount(() => {
     socket = io("http://localhost:3000");
 
     socket.on("connect", () => {
-      if ($user && $code) {
+      if ($user && $code !== null) {
         socket.emit("lobby-join", {
           userId: $user.id,
           lobbyId: $code,
@@ -22,21 +33,12 @@
       }
     });
 
-    socket.on(`send-lobby-socket`, (data) => {
+    socket.on("send-lobby-socket", (data) => {
       lobbySocket = data;
+      setupJumpFunction();
     });
 
-    if ($user && $code && lobbySocket) {
-      // Make your flappy jump
-      jumpFunction = () => {
-        socket.emit("jump", {
-          userId: $user.id,
-          lobbySocket: lobbySocket,
-        });
-      };
-    }
-
-    window.addEventListener("keydown", (event) => {
+    window.addEventListener("keydown", (event: KeyboardEvent) => {
       if (event.key === " ") {
         jumpFunction();
       }
