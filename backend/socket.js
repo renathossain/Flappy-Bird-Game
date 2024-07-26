@@ -41,7 +41,7 @@ export default function initializeSocket(server) {
 
         // Check if user already has a lobby
         const existingLobby = await Lobby.findOne({ where: { id: lobbyId, userId } });
-        if (existingLobby) {
+        if (existingLobby && existingLobby.socketId === "") {
           // Update the socketId with the new socket.id
           await existingLobby.update({ socketId: socket.id });
 
@@ -53,7 +53,7 @@ export default function initializeSocket(server) {
             io.to(player.socketId).emit('send-lobby-socket', existingLobby.socketId);
           });
 
-          socket.emit(`lobby-send-code`, existingLobby.id);
+          socket.emit(`lobby-authorize`, true);
           socket.emit(`lobby-send-players`, await getLobbyPlayers(existingLobby.id));
           console.log(`Lobby found: ${existingLobby.id}`);
           return;
@@ -80,7 +80,7 @@ export default function initializeSocket(server) {
         const existingMembership = await LobbyUser.findOne({
           where: { userId, lobbyId: lobby.id }
         });
-        if (existingMembership) {
+        if (existingMembership && existingMembership.socketId === "") {
           await existingMembership.update({ socketId: socket.id });
           io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
           socket.emit(`send-lobby-socket`, lobby.socketId);

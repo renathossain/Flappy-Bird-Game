@@ -14,6 +14,7 @@
     currentSkin: number;
   }[] = [];
   let gameStarted: boolean = false;
+  let authorized = false;
 
   const startGame = () => {
     if (players.length >= 2) {
@@ -35,8 +36,8 @@
       }
     });
 
-    socket.on(`lobby-send-code`, (code) => {
-      $host = code;
+    socket.on(`lobby-authorize`, (data) => {
+      authorized = data;
     });
 
     socket.on(`lobby-send-players`, (data) => {
@@ -51,9 +52,9 @@
   });
 </script>
 
-{#if gameStarted && $host}
+{#if gameStarted && $host && authorized}
   <Game {socket} {players} />
-{:else if !gameStarted && $host}
+{:else if !gameStarted && $host && authorized}
   <div class="lobby-container">
     <div class="retro-container code">Code: {$host}</div>
     <div class="players">

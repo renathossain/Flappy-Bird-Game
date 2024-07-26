@@ -18,14 +18,16 @@
 			});
 			const data = await res.json();
 			if (data.error) {
+				$host = null;
 				alert(data.error);
 			} else {
 				if (data.lobbyId) {
 					$host = data.lobbyId;
+					navigate("/lobby");
 				}
-				navigate("/lobby");
 			}
 		} else {
+			$host = null;
 			alert("Login to create lobby.");
 		}
 	};

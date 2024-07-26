@@ -11,16 +11,16 @@ export interface User {
 }
 export const user = writable<User | null>(null);
 
-const storedCode = localStorage.getItem('joinCode');
+const storedCode = sessionStorage.getItem('joinCode');
 export const code = writable<number | null>(storedCode ? Number(storedCode) : null);
 
 code.subscribe(value => {
-  localStorage.setItem('joinCode', value !== null ? value.toString() : '');
+  sessionStorage.setItem('joinCode', value !== null ? value.toString() : '');
 });
 
-const storedHost = localStorage.getItem('hostCode');
+const storedHost = sessionStorage.getItem('hostCode');
 export const host = writable<number | null>(storedHost ? Number(storedHost) : null);
 
 host.subscribe(value => {
-  localStorage.setItem('hostCode', value !== null ? value.toString() : '');
+  sessionStorage.setItem('hostCode', value !== null ? value.toString() : '');
 });
