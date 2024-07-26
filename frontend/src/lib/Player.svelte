@@ -3,7 +3,7 @@
   import Button from "./components/Button.svelte";
   import Unauthorized from "./Unauthorized.svelte";
   import { user, code } from "../store";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
 
   let socket: Socket;

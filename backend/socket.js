@@ -68,6 +68,14 @@ export default function initializeSocket(server) {
       try {
         const { userId, lobbyId } = data;
 
+        // Check if user exists
+        const user = User.findByPk(userId);
+        if (!user) {
+          console.log(`User not found: ${socket.id}`);
+          socket.emit("lobby-error", { message: "User not found" });
+          return;
+        }
+
         // Check if lobby exists
         const lobby = await Lobby.findByPk(lobbyId);
         if (!lobby) {
@@ -87,6 +95,12 @@ export default function initializeSocket(server) {
           console.log(`User has joined the lobby: ${socket.id}`);
           return;
         }
+
+        // Add the user to the lobby
+        await LobbyUser.create({ userId, lobbyId: lobby.id, socketId: socket.id });
+        io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
+        socket.emit(`send-lobby-socket`, lobby.socketId);
+        console.log(`User joined lobby: ${socket.id}`);
       } catch (error) {
         console.error("Error joining lobby:", error);
         socket.emit("lobby-error", { message: "Error joining lobby" });
