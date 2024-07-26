@@ -17,3 +17,10 @@ export const code = writable<number | null>(storedCode ? Number(storedCode) : nu
 code.subscribe(value => {
   localStorage.setItem('joinCode', value !== null ? value.toString() : '');
 });
+
+const storedHost = localStorage.getItem('hostCode');
+export const host = writable<number | null>(storedHost ? Number(storedHost) : null);
+
+host.subscribe(value => {
+  localStorage.setItem('hostCode', value !== null ? value.toString() : '');
+});

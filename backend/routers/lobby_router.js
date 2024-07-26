@@ -5,6 +5,51 @@ import { isLoggedIn } from "../middleware/auth.js";
 
 export const lobbyRouter = Router();
 
+// Generate a unique 4-digit code for lobby
+const generateUniqueCode = async () => {
+  let code;
+  do {
+    code = Math.floor(1000 + Math.random() * 9000);
+  } while (await Lobby.findOne({ where: { id: code } }));
+  return code;
+};
+
+// Create a lobby
+lobbyRouter.post('/api/lobby', isLoggedIn, async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    // Check if user exists
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    // Check if user already has a lobby
+    const existingLobby = await Lobby.findOne({ where: { userId } });
+    if (existingLobby) {
+      return res.status(200).json({
+        lobbyId: existingLobby.id,
+      });
+    }
+
+    // Generate a unique 4-digit code
+    const uniqueCode = await generateUniqueCode();
+
+    // Create a new lobby with a unique 4-digit code
+    const newLobby = await Lobby.create({ id: uniqueCode, userId, socketId: "" });
+
+    // Respond with the details of the created lobby
+    res.status(201).json({
+      lobbyId: newLobby.id,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error creating lobby."
+    });
+  }
+});
+
 // Join a lobby
 lobbyRouter.post('/api/lobby/join', isLoggedIn, async (req, res) => {
   const { userId, lobbyId } = req.body;

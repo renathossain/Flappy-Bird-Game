@@ -2,7 +2,7 @@
   import Button from "./components/Button.svelte";
   import Avatar from "./components/Avatar.svelte";
   import Game from "./Game.svelte";
-  import { user } from "../store";
+  import { user, host } from "../store";
   import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
 
@@ -27,8 +27,11 @@
     socket = io("http://localhost:3000");
 
     socket.on("connect", () => {
-      if ($user) {
-        socket.emit("lobby-create", $user.id);
+      if ($user && $host) {
+        socket.emit("lobby-create", {
+          userId: $user.id,
+          lobbyId: $host,
+        });
       }
     });
 
@@ -101,6 +104,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    column-gap: 20px;
   }
 
   .controls {

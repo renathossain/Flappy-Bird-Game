@@ -3,11 +3,28 @@
 	import Button from "./components/Button.svelte";
 	import NumberInput from "./components/NumberInput.svelte";
 	import ProfilePic from "./components/ProfilePic.svelte";
-	import { user, code } from "../store";
+	import { user, code, host } from "../store";
 
-	const gotoLobby = () => {
+	const gotoLobby = async () => {
 		if ($user) {
-			navigate("/lobby");
+			const res = await fetch("/api/lobby", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userId: $user.id,
+				}),
+			});
+			const data = await res.json();
+			if (data.error) {
+				alert(data.error);
+			} else {
+				if (data.lobbyId) {
+					$host = data.lobbyId;
+				}
+				navigate("/lobby");
+			}
 		} else {
 			alert("Login to create lobby.");
 		}
