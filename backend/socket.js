@@ -133,9 +133,28 @@ export default function initializeSocket(server) {
           }
         }
 
-        // Clear the socketId of destroyed lobby
+        // Delete lobby due to inactivity
         const lobby = await Lobby.findOne({ where: { socketId: socket.id } });
-        await lobby.update({ socketId: "" });
+        if (lobby) {
+          // Clear the socketId of destroyed lobby
+          await lobby.update({ socketId: "" });
+
+          // Check how many current users are in the lobby
+          const userCount = await LobbyUser.count({ where: { lobbyId: lobby.id } });
+
+          // If no users are left, start a 5-second delay
+          if (userCount === 0) {
+            setTimeout(async () => {
+              // Recheck if the lobby's socketId is still empty and if there are still no users
+              const updatedLobby = await Lobby.findByPk(lobby.id);
+              if (updatedLobby && updatedLobby.socketId === "") {
+                // Delete the lobby if it still meets the conditions
+                await Lobby.destroy({ where: { id: lobby.id } });
+                console.log(`Lobby ${lobby.id} deleted due to inactivity.`);
+              }
+            }, 5000); // 5-second delay
+          }
+        }
 
       } catch (error) {
         console.error("Error deleting lobby:", error);
