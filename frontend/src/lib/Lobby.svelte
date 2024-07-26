@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { navigate } from "svelte-routing";
   import Button from "./components/Button.svelte";
   import Avatar from "./components/Avatar.svelte";
   import Unauthorized from "./Unauthorized.svelte";
@@ -22,6 +23,13 @@
     } else {
       alert("Need at least 2 people to start.");
     }
+  };
+
+  const destroyLobby = () => {
+    if ($host) {
+      socket.emit("lobby-dstroy", $host);
+    }
+    navigate("/");
   };
 
   onMount(() => {
@@ -67,7 +75,7 @@
       {/if}
     </div>
     <div class="controls">
-      <Button text="Destroy Lobby" link="/"></Button>
+      <Button text="Destroy Lobby" onClick={destroyLobby}></Button>
       <Button text="Start Game" onClick={startGame}></Button>
     </div>
   </div>

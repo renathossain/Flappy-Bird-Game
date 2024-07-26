@@ -99,3 +99,30 @@ lobbyRouter.post('/api/lobby/join', isLoggedIn, async (req, res) => {
     });
   }
 });
+
+// Delete a lobby
+lobbyRouter.delete('/api/lobby', isLoggedIn, async (req, res) => {
+  const { lobbyId } = req.body;
+
+  try {
+    const lobby = await Lobby.findByPk(lobbyId);
+
+    // Check if lobby exists
+    if (!lobby) {
+      return res.status(404).json({ message: "Lobby not found" });
+    }
+
+    // Clear users from the lobby
+    await LobbyUser.destroy({ where: { lobbyId } });
+
+    // Delete the lobby
+    await Lobby.destroy({ where: { id: lobbyId } });
+
+    res.status(200).json({ message: "Lobby deleted successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error deleting lobby",
+      error: error.message
+    });
+  }
+});

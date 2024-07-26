@@ -8,11 +8,11 @@
 
   let socket: Socket;
   let jumpFunction = () => {};
-  let lobbySocket: string | null = null;
+  let lobbySocket: string = "";
 
   const setupJumpFunction = () => {
     jumpFunction = () => {
-      if ($user && lobbySocket) {
+      if ($user && lobbySocket != "") {
         socket.emit("jump", {
           userId: $user.id,
           lobbySocket: lobbySocket,
@@ -52,7 +52,7 @@
   });
 </script>
 
-{#if lobbySocket}
+{#if lobbySocket != ""}
   <div class="container">
     <BigButton text="Tap to Fly" onClick={jumpFunction} />
     <div class="controls">

@@ -107,6 +107,33 @@ export default function initializeSocket(server) {
       }
     });
 
+    socket.on("lobby-dstroy", async (lobbyId) => {
+      try {
+        const lobby = await Lobby.findByPk(lobbyId);
+
+        // Check if lobby exists
+        if (!lobby) {
+          return;
+        }
+
+        // Fetch all players in the existing lobby
+        const players = await getLobbyPlayers(lobby.id);
+
+        // Emit `send-lobby-socket` event to each player in the lobby
+        players.forEach(player => {
+          io.to(player.socketId).emit('send-lobby-socket', "");
+        });
+
+        // Clear users from the lobby
+        await LobbyUser.destroy({ where: { lobbyId } });
+
+        // Delete the lobby
+        await Lobby.destroy({ where: { id: lobbyId } });
+      } catch (error) {
+        console.error("Error deleting lobby:", error);
+      }
+    });
+
     socket.on("jump", async (data) => {
       const { userId, lobbySocket } = data;
       io.to(lobbySocket).emit(`jump-${userId}`);
