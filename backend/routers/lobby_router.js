@@ -28,9 +28,13 @@ lobbyRouter.post('/api/lobby', isLoggedIn, async (req, res) => {
     // Check if user already has a lobby
     const existingLobby = await Lobby.findOne({ where: { userId } });
     if (existingLobby) {
-      return res.status(200).json({
-        lobbyId: existingLobby.id,
-      });
+      if (existingLobby.socketId === "") {
+        return res.status(200).json({
+          lobbyId: existingLobby.id,
+        });
+      } else {
+        return res.status(409).json({ error: "You are already hosting a lobby." });
+      }
     }
 
     // Generate a unique 4-digit code
@@ -78,13 +82,17 @@ lobbyRouter.post('/api/lobby/join', isLoggedIn, async (req, res) => {
       where: { userId, lobbyId: lobby.id }
     });
     if (existingMembership) {
-      return res.status(200).json({ success: "User is already in the lobby." });
+      if (existingMembership.socketId === "") {
+        return res.status(200).json({ success: "User joined lobby successfully." });
+      } else {
+        return res.status(409).json({ error: "You already joined the lobby." });
+      }
     }
 
     // Add user to the lobby
     await LobbyUser.create({ userId, lobbyId: lobby.id, socketId: "" });
 
-    res.status(201).json({ success: "User joined the lobby successfully." });
+    res.status(201).json({ success: "User joined lobby successfully." });
   } catch (error) {
     res.status(500).json({
       error: "Error joining lobby."

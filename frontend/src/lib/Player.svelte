@@ -1,19 +1,20 @@
 <script lang="ts">
   import BigButton from "./components/BigButton.svelte";
   import Button from "./components/Button.svelte";
+  import Unauthorized from "./Unauthorized.svelte";
   import { user, code } from "../store";
   import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
 
   let socket: Socket;
   let jumpFunction = () => {};
-  let lobbySocket: string;
+  let lobbySocket: string | null = null;
 
   onMount(() => {
     socket = io("http://localhost:3000");
 
     socket.on("connect", () => {
-      if ($user && $code !== null) {
+      if ($user && $code) {
         socket.emit("lobby-join", {
           userId: $user.id,
           lobbyId: $code,
@@ -25,7 +26,7 @@
       lobbySocket = data;
     });
 
-    if ($user && $code !== null) {
+    if ($user && $code && lobbySocket) {
       // Make your flappy jump
       jumpFunction = () => {
         socket.emit("jump", {
@@ -49,12 +50,16 @@
   });
 </script>
 
-<div class="container">
-  <BigButton text="Tap to Fly" onClick={jumpFunction} />
-  <div class="controls">
-    <Button text="Leave the Game" link="/" />
+{#if lobbySocket}
+  <div class="container">
+    <BigButton text="Tap to Fly" onClick={jumpFunction} />
+    <div class="controls">
+      <Button text="Leave the Game" link="/" />
+    </div>
   </div>
-</div>
+{:else}
+  <Unauthorized />
+{/if}
 
 <style>
   .controls {

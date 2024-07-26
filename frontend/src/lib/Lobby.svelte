@@ -1,13 +1,13 @@
 <script lang="ts">
   import Button from "./components/Button.svelte";
   import Avatar from "./components/Avatar.svelte";
+  import Unauthorized from "./Unauthorized.svelte";
   import Game from "./Game.svelte";
   import { user, host } from "../store";
   import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
 
   let socket: Socket;
-  let lobbyId: number | null = null;
   let players: {
     userId: string;
     givenName: string;
@@ -36,7 +36,7 @@
     });
 
     socket.on(`lobby-send-code`, (code) => {
-      lobbyId = code;
+      $host = code;
     });
 
     socket.on(`lobby-send-players`, (data) => {
@@ -51,11 +51,11 @@
   });
 </script>
 
-{#if gameStarted}
+{#if gameStarted && $host}
   <Game {socket} {players} />
-{:else}
+{:else if !gameStarted && $host}
   <div class="lobby-container">
-    <div class="retro-container code">Code: {lobbyId}</div>
+    <div class="retro-container code">Code: {$host}</div>
     <div class="players">
       {#if players.length > 0}
         {#each players as { givenName, currentSkin }}
@@ -70,6 +70,8 @@
       <Button text="Start Game" onClick={startGame}></Button>
     </div>
   </div>
+{:else}
+  <Unauthorized />
 {/if}
 
 <style>

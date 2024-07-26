@@ -118,6 +118,11 @@ export default function initializeSocket(server) {
             io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
           }
         }
+
+        // Clear the socketId of destroyed lobby
+        const lobby = await Lobby.findOne({ where: { socketId: socket.id } });
+        await lobby.update({ socketId: "" });
+
       } catch (error) {
         console.error("Error deleting lobby:", error);
       }
