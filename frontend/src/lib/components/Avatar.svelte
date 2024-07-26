@@ -12,10 +12,10 @@
   .container {
     display: flex;
     flex-direction: column;
-    height: 85%;
-    max-width: 800px;
-    width: 90%;
-    max-width: 600px;
+    height: 100%;
+    width: 100%;
+    max-width: 50vmin;
+    max-height: 50vmin;
     justify-content: center;
     align-items: center;
     border: 4px solid #543847;
@@ -38,7 +38,7 @@
 
   img {
     image-rendering: pixelated;
-    width: 50%;
+    width: 20vmin;
     max-width: 300px;
     margin-top: 20px;
   }

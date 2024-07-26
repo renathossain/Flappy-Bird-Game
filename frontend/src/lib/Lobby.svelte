@@ -116,6 +116,7 @@
     justify-content: center;
     align-items: center;
     column-gap: 20px;
+    height: 30vh;
   }
 
   .controls {

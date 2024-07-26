@@ -63,10 +63,10 @@
 <div class="header">
 	{#if $user}
 		<div class="auth">
+			<ProfilePic />
 			<Button text="Sign Out" link="/auth/logout" />
 			<Button text="Skins" link="/store" />
 		</div>
-		<ProfilePic />
 	{:else}
 		<Button text="Sign In" link="/auth/google" />
 	{/if}
