@@ -9,7 +9,7 @@
   let socket: Socket;
   let lobbyId: number | null = null;
   let players: {
-    userId: number;
+    userId: string;
     givenName: string;
     currentSkin: number;
   }[] = [];

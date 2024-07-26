@@ -22,7 +22,8 @@ const getLobbyPlayers = async (lobbyId) => {
     return players.map(player => ({
       userId: player.userId,
       givenName: player.user.givenName,
-      currentSkin: player.user.currentSkin
+      currentSkin: player.user.currentSkin,
+      socketId: player.socketId
     }));
   } catch (error) {
     console.error("Error fetching lobby players:", error);
@@ -58,6 +59,15 @@ export default function initializeSocket(server) {
         if (existingLobby) {
           // Update the socketId with the new socket.id
           await existingLobby.update({ socketId: socket.id });
+
+          // Fetch all players in the existing lobby
+          const players = await getLobbyPlayers(existingLobby.id);
+
+          // Emit `send-lobby-socket` event to each player in the lobby
+          players.forEach(player => {
+            io.to(player.socketId).emit('send-lobby-socket', existingLobby.socketId);
+          });
+
           socket.emit(`lobby-send-code`, existingLobby.id);
           socket.emit(`lobby-send-players`, await getLobbyPlayers(existingLobby.id));
           console.log(`Lobby found: ${existingLobby.id}`);
@@ -114,6 +124,7 @@ export default function initializeSocket(server) {
         if (existingMembership) {
           await existingMembership.update({ socketId: socket.id });
           io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
+          socket.emit(`send-lobby-socket`, lobby.socketId);
           console.log(`User already joined lobby: ${socket.id}`);
           return;
         }
@@ -121,6 +132,7 @@ export default function initializeSocket(server) {
         // Add the user to the lobby
         await LobbyUser.create({ userId, lobbyId: lobby.id, socketId: socket.id });
         io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
+        socket.emit(`send-lobby-socket`, lobby.socketId);
         console.log(`User joined lobby: ${socket.id}`);
       } catch (error) {
         console.error("Error joining lobby:", error);
@@ -129,13 +141,8 @@ export default function initializeSocket(server) {
     });
 
     socket.on("jump", async (data) => {
-      const { userId, lobbyId } = data;
-
-      // Find the lobby
-      const lobby = await Lobby.findByPk(lobbyId);
-      if (lobby) {
-        io.to(lobby.socketId).emit(`jump-${userId}`);
-      }
+      const { userId, lobbySocket } = data;
+      io.to(lobbySocket).emit(`jump-${userId}`);
     });
 
     socket.on("disconnect", async () => {

@@ -21,18 +21,22 @@
       }
     });
 
-    // Make your flappy jump
-    jumpFunction = () => {
-      if ($user && $code !== null) {
+    socket.on(`send-lobby-socket`, (data) => {
+      lobbySocket = data;
+    });
+
+    if ($user && $code !== null) {
+      // Make your flappy jump
+      jumpFunction = () => {
         socket.emit("jump", {
           userId: $user.id,
-          lobbyId: $code,
+          lobbySocket: lobbySocket,
         });
-      }
-    };
+      };
+    }
 
     window.addEventListener("keydown", (event) => {
-      if (event.key === " " || event.key === "Spacebar") {
+      if (event.key === " ") {
         jumpFunction();
       }
     });

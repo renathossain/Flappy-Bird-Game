@@ -6,10 +6,16 @@
   // Imported variables
   export let socket: Socket | null = null;
   export let players: {
-    userId: number;
+    userId: string;
     givenName: string;
     currentSkin: number;
-  }[] = [];
+  }[] = [
+    {
+      userId: "1",
+      givenName: "Player",
+      currentSkin: 1,
+    },
+  ];
 
   // Magic Constants
   const flappyRightOffset = window.innerHeight / 10;
@@ -24,7 +30,7 @@
 
   // Flappies Data Structure
   type FlappyObject = {
-    userId: number;
+    userId: string;
     givenName: string;
     imageKonva: Konva.Image;
     imageObj: HTMLImageElement;
@@ -280,6 +286,12 @@
           gameRunning = true;
           topText.remove();
           anim.start();
+        }
+      }
+
+      if (gameRunning && !gameOver) {
+        if (event.key === " ") {
+          flappies[0].downVelocity = flappyJumpHeight;
         }
       }
 
