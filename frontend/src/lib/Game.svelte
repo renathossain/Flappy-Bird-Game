@@ -82,7 +82,7 @@
   const topTextConfig = {
     x: window.innerWidth / 2 - 100,
     y: window.innerHeight / 2,
-    text: "Press Space to Start",
+    text: "",
     fontSize: 40,
     fontFamily: "Arial",
     fill: "#000",
@@ -162,6 +162,23 @@
     });
     layerTop.add(scoreText);
     layerTop.add(topText);
+    layerTop.draw();
+
+    async function startCountdown() {
+      const updateText = (text: string) => {
+        topText.text(text);
+        layerTop.draw();
+      };
+
+      for (let countdown = 3; countdown >= 0; countdown--) {
+        updateText(countdown > 0 ? countdown.toString() : "Go!");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+
+      topText.remove();
+      gameRunning = true;
+      anim.start();
+    }
 
     // Initial pipe generation
     let { upperPipe, lowerPipe } = generatePipePair();
@@ -177,6 +194,11 @@
         anim.stop();
         topText.text("Game Over");
         layerTop.add(topText);
+      }
+
+      // If flappy is out and the last one, stop the game
+      if (flappies.filter((flappy) => flappy.playing).length === 0) {
+        stopGame();
       }
 
       // Animate Flappy
@@ -201,11 +223,6 @@
             y: Math.max(Math.min(newY, ground), ceiling),
           });
         } else {
-          // If flappy is out and the last one, stop the game
-          if (flappies.filter((flappy) => flappy.playing).length === 0) {
-            stopGame();
-          }
-
           // If flappy is out and not last, it gets sweeped out
           flappy.imageKonva.position({
             x: flappy.imageKonva.x() - pipeMovementSpeed,
@@ -278,20 +295,33 @@
       }
     }, layer);
 
+    if (socket) {
+      // Count down for multi-player
+      startCountdown();
+    } else {
+      // Display the start message for single-player
+      topText.text("Press Space to Start");
+      layerTop.draw();
+    }
+
     // Handle spacebar events
     window.addEventListener("keydown", (event) => {
       if (!gameRunning && !gameOver) {
         if (event.key === " ") {
-          // Start game when spacebar is pressed
-          gameRunning = true;
-          topText.remove();
-          anim.start();
+          if (!socket) {
+            // Start game for single-player
+            gameRunning = true;
+            topText.remove();
+            anim.start();
+          }
         }
       }
 
       if (gameRunning && !gameOver) {
         if (event.key === " ") {
-          flappies[0].downVelocity = flappyJumpHeight;
+          if (!socket) {
+            flappies[0].downVelocity = flappyJumpHeight;
+          }
         }
       }
 

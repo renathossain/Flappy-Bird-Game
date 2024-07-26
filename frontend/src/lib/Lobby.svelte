@@ -16,7 +16,11 @@
   let gameStarted: boolean = false;
 
   const startGame = () => {
-    gameStarted = true;
+    if (players.length >= 2) {
+      gameStarted = true;
+    } else {
+      alert("Need at least 2 people to start.");
+    }
   };
 
   onMount(() => {
@@ -50,9 +54,13 @@
   <div class="lobby-container">
     <div class="retro-container code">Code: {lobbyId}</div>
     <div class="players">
-      {#each players as { givenName, currentSkin }}
-        <Avatar {givenName} {currentSkin} />
-      {/each}
+      {#if players.length > 0}
+        {#each players as { givenName, currentSkin }}
+          <Avatar {givenName} {currentSkin} />
+        {/each}
+      {:else}
+        <div class="waiting">Waiting for players to join...</div>
+      {/if}
     </div>
     <div class="controls">
       <Button text="Destroy Lobby" link="/"></Button>
@@ -91,12 +99,20 @@
     margin-bottom: 20px;
     flex: auto;
     display: flex;
-    column-gap: 20px;
+    justify-content: center;
+    align-items: center;
   }
 
   .controls {
     display: flex;
     justify-content: flex-end;
     column-gap: 20px;
+  }
+
+  .waiting {
+    text-align: center;
+    font-family: "RetroGaming", sans-serif;
+    font-size: 50px;
+    color: #553000;
   }
 </style>
