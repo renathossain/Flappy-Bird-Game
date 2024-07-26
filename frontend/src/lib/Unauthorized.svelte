@@ -2,4 +2,4 @@
   import Button from "./components/Button.svelte";
 </script>
 
-<Button text="Return to Login Page" link="/" />
+<Button text="Return to Main Page" link="/" />

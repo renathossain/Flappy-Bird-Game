@@ -46,7 +46,7 @@
   .container3 {
     text-align: center;
     font-family: "RetroGaming", sans-serif;
-    font-size: 50px;
+    font-size: 4vmin;
     color: #fffefd;
     background-color: #e86101;
     padding: 10px;

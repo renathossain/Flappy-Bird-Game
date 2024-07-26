@@ -11,12 +11,14 @@ body {
   width: 100vw;
   background-image: url("/assets/background-day.png");
   background-repeat: repeat-x;
-  background-size: contain;
+  background-size: auto 100%;
+  background-position: top center;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 
 @font-face {
   font-family: "RetroGaming";

@@ -54,7 +54,9 @@
 
 {#if lobbySocket != ""}
   <div class="container">
-    <BigButton text="Tap to Fly" onClick={jumpFunction} />
+    <div class="big-button-container">
+      <BigButton text="Tap\Press Space To Fly" onClick={jumpFunction} />
+    </div>
     <div class="controls">
       <Button text="Leave the Game" link="/" />
     </div>
@@ -64,9 +66,27 @@
 {/if}
 
 <style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 90vh; /* 90% of viewport height */
+    width: 90vw; /* 90% of viewport width */
+    margin: auto; /* Center horizontally */
+  }
+
   .controls {
     display: flex;
     justify-content: flex-end;
+    align-items: flex-end; /* Align to the bottom */
     column-gap: 20px;
+    padding: 10px; /* Optional padding */
+  }
+
+  .big-button-container {
+    flex: 1; /* Allow this to take the remaining space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>

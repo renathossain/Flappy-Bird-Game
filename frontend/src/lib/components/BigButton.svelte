@@ -37,32 +37,39 @@
     display: block;
     text-decoration: none;
     margin-bottom: 20px;
+    width: 100%; /* Make button occupy full width of its container */
+    height: 100%; /* Make button occupy full height of its container */
   }
 
   .container1 {
     background-color: #553000;
     padding: 5px 5px 10px 5px;
+    width: 100%; /* Ensure container1 occupies full width */
+    height: 100%; /* Ensure container1 occupies full height */
+    box-sizing: border-box; /* Include padding in width and height calculation */
   }
 
   .container2 {
     background-color: #fcfdfb;
     padding: 5px;
+    width: 100%; /* Ensure container2 occupies full width */
+    height: 100%; /* Ensure container2 occupies full height */
+    box-sizing: border-box; /* Include padding in width and height calculation */
   }
 
   .container3 {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 80vh;
-    max-height: 768px;
-    width: 80vw;
-    max-width: 1024px;
     text-align: center;
     font-family: "RetroGaming", sans-serif;
-    font-size: 80px;
+    font-size: 6vmin; /* Responsive font size */
     color: #fffefd;
     background-color: #e86101;
     padding: 10px;
+    width: 100%; /* Ensure container3 occupies full width */
+    height: 100%; /* Ensure container3 occupies full height */
+    box-sizing: border-box; /* Include padding in width and height calculation */
   }
 
   button.button-link {
@@ -70,6 +77,8 @@
     border: none;
     cursor: pointer;
     padding: 0;
+    width: 100%; /* Ensure button occupies full width */
+    height: 100%; /* Ensure button occupies full height */
   }
 
   button.button-link:focus {

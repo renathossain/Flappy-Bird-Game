@@ -43,11 +43,11 @@
   .container3 {
     text-align: center;
     font-family: "RetroGaming", sans-serif;
-    font-size: 50px;
+    font-size: 4vmin;
     background-color: #fcfdfb;
     padding: 10px;
     border: none;
-    width: 400px;
+    width: 20vw;
   }
 
   .container3:focus {

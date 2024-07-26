@@ -95,7 +95,7 @@
   .retro-container {
     text-align: center;
     font-family: "RetroGaming", sans-serif;
-    font-size: 50px;
+    font-size: 4vmin;
     color: #fc7858;
     background-color: #ded895;
     border-radius: 30px 70px 50px 10px / 20px 40px 60px 80px;
@@ -127,7 +127,7 @@
   .waiting {
     text-align: center;
     font-family: "RetroGaming", sans-serif;
-    font-size: 50px;
+    font-size: 4vmin;
     color: #553000;
   }
 </style>
