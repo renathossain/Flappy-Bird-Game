@@ -64,8 +64,8 @@
 	{#if $user}
 		<div class="auth">
 			<ProfilePic />
-			<Button text="Sign Out" link="/auth/logout" />
-			<Button text="Skins" link="/store" />
+			<Button text="Sign Out" link="/auth/logout" fontSize="3vmin" />
+			<Button text="Skins" link="/store" fontSize="3vmin" />
 		</div>
 	{:else}
 		<Button text="Sign In" link="/auth/google" />

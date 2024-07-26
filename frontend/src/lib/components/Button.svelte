@@ -2,13 +2,14 @@
   export let text: string;
   export let link: string | null = null;
   export let onClick: (() => void) | null = null;
+  export let fontSize: string = "4vmin";
 </script>
 
 {#if link}
   <a class="button-link" href={link}>
     <div class="container1">
       <div class="container2">
-        <div class="container3">
+        <div class="container3" style="font-size: {fontSize};">
           {text}
         </div>
       </div>
@@ -18,7 +19,7 @@
   <button class="button-link" on:click={onClick}>
     <div class="container1">
       <div class="container2">
-        <div class="container3">
+        <div class="container3" style="font-size: {fontSize};">
           {text}
         </div>
       </div>
@@ -46,7 +47,6 @@
   .container3 {
     text-align: center;
     font-family: "RetroGaming", sans-serif;
-    font-size: 4vmin;
     color: #fffefd;
     background-color: #e86101;
     padding: 10px;
