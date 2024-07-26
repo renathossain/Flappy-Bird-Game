@@ -1,18 +1,21 @@
 <script lang="ts">
-  export let username;
+  export let givenName: string;
+  export let currentSkin: number;
 </script>
 
 <div class="container">
-  <div class="retro-container username">{username}</div>
-  <img src="src/assets/flappies/1.png" alt="Flappy" />
+  <div class="username">{givenName}</div>
+  <img src="/assets/flappies/{currentSkin}.png" alt="Flappy" />
 </div>
 
 <style>
   .container {
     display: flex;
     flex-direction: column;
-    width: 90%;
-    max-width: 600px;
+    height: 100%;
+    width: 100%;
+    max-width: 50vmin;
+    max-height: 50vmin;
     justify-content: center;
     align-items: center;
     border: 4px solid #543847;
@@ -27,13 +30,15 @@
   }
 
   .username {
+    font-family: "RetroGaming", sans-serif;
+    color: #553000;
     font-size: 2vw;
     margin-bottom: 10px;
   }
 
   img {
     image-rendering: pixelated;
-    width: 50%;
+    width: 20vmin;
     max-width: 300px;
     margin-top: 20px;
   }

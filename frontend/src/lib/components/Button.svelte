@@ -1,23 +1,37 @@
-<script>
-  export let text;
-  export let link;
+<script lang="ts">
+  export let text: string;
+  export let link: string | null = null;
+  export let onClick: (() => void) | null = null;
+  export let fontSize: string = "4vmin";
 </script>
 
-<a class="button-link" href={link}>
-  <div class="container1">
-    <div class="container2">
-      <div class="container3">
-        {text}
+{#if link}
+  <a class="button-link" href={link}>
+    <div class="container1">
+      <div class="container2">
+        <div class="container3" style="font-size: {fontSize};">
+          {text}
+        </div>
       </div>
     </div>
-  </div>
-</a>
+  </a>
+{:else if onClick}
+  <button class="button-link" on:click={onClick}>
+    <div class="container1">
+      <div class="container2">
+        <div class="container3" style="font-size: {fontSize};">
+          {text}
+        </div>
+      </div>
+    </div>
+  </button>
+{/if}
 
 <style>
   .button-link {
     display: inline-block;
     text-decoration: none;
-    margin-bottom: 20px;
+    white-space: nowrap;
   }
 
   .container1 {
@@ -33,9 +47,19 @@
   .container3 {
     text-align: center;
     font-family: "RetroGaming", sans-serif;
-    font-size: 50px;
     color: #fffefd;
     background-color: #e86101;
     padding: 10px;
+  }
+
+  button.button-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  button.button-link:focus {
+    outline: none;
   }
 </style>

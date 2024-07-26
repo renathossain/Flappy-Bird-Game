@@ -1,18 +1,23 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { Router, Route } from "svelte-routing";
+  import Protected from "./lib/Protected.svelte";
   import Main from "./lib/Main.svelte";
   import Lobby from "./lib/Lobby.svelte";
   import Game from "./lib/Game.svelte";
   import Player from "./lib/Player.svelte";
+  import { user } from "./store";
 
-  export let url = "";
+  onMount(async () => {
+    const res = await fetch("/api/user");
+    const data = await res.json();
+    user.set(data.user);
+  });
 </script>
 
-<Router {url}>
-  <Route path="/"><Main /></Route>
-  <Route path="/lobby"><Lobby /></Route>
+<Router>
+  <Route path="/" component={Main} />
+  <Protected path="/lobby" component={Lobby} />
   <Route path="/game" component={Game} />
-  <Route path="/player/:username" let:params
-    ><Player username={params.username} /></Route
-  >
+  <Protected path="/player" component={Player} />
 </Router>

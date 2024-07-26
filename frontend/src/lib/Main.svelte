@@ -1,34 +1,83 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { navigate } from "svelte-routing";
 	import Button from "./components/Button.svelte";
 	import NumberInput from "./components/NumberInput.svelte";
-	import { user, registered } from "../store.js";
+	import ProfilePic from "./components/ProfilePic.svelte";
+	import { user, code, host } from "../store";
 
-	onMount(async () => {
-		const res = await fetch("/api/user");
-		const data = await res.json();
-		registered.set(data.registered);
-		user.set(data.user);
-	});
+	const gotoLobby = async () => {
+		if ($user) {
+			const res = await fetch("/api/lobby", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userId: $user.id,
+				}),
+			});
+			const data = await res.json();
+			if (data.error) {
+				$host = null;
+				alert(data.error);
+			} else {
+				if (data.lobbyId) {
+					$host = data.lobbyId;
+					navigate("/lobby");
+				}
+			}
+		} else {
+			$host = null;
+			alert("Login to create lobby.");
+		}
+	};
+
+	const joinLobby = async () => {
+		if ($user && $code !== null) {
+			if ($code !== null && /^\d{4}$/.test($code.toString())) {
+				const res = await fetch("/api/lobby/join", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						userId: $user.id,
+						lobbyId: $code,
+					}),
+				});
+				const data = await res.json();
+				if (data.error) {
+					alert(data.error);
+				} else {
+					navigate("/player");
+				}
+			} else {
+				alert("Enter a valid 4-digit code.");
+			}
+		} else {
+			alert("Login to join lobby.");
+		}
+	};
 </script>
 
 <div class="header">
-	{#if $registered}
-		<Button text="Buy/Change Skins" link="/store"></Button>
-		<Button text="Sign Out" link="/auth/logout"></Button>
+	{#if $user}
+		<div class="auth">
+			<ProfilePic />
+			<Button text="Sign Out" link="/auth/logout" fontSize="3vmin" />
+			<Button text="Skins" link="/store" fontSize="3vmin" />
+		</div>
 	{:else}
-		<Button text="Sign In" link="/auth/google"></Button>
+		<Button text="Sign In" link="/auth/google" />
 	{/if}
 </div>
 
 <div class="container">
-	<div class="start">
-		<Button text="Start Singleplayer" link="/game"></Button>
-		<Button text="Host Multiplayer" link="/lobby"></Button>
-	</div>
+	<Button text="Start Singleplayer" link="/game" />
+	<Button text="Host Multiplayer" onClick={gotoLobby} />
 	<div class="join">
 		<NumberInput />
-		<Button text="Join Lobby" link="/player/0"></Button>
+		<Button text="Join Lobby" onClick={joinLobby} />
 	</div>
 </div>
 
@@ -37,10 +86,20 @@
 		position: absolute;
 		top: 20px;
 		right: 20px;
+		display: flex;
+		align-items: flex-start;
+		gap: 10px;
 	}
 
 	.container {
 		display: flex;
 		flex-direction: column;
+		row-gap: 20px;
+	}
+
+	.auth {
+		display: flex;
+		flex-direction: column;
+		row-gap: 10px;
 	}
 </style>

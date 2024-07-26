@@ -14,14 +14,14 @@ userRouter.get('/api/user', async (req, res) => {
 
       if (user) {
         // Send the entire user record if found
-        res.json({ registered: true, user: user });
+        res.json({ user: user });
       } else {
-        res.status(404).json({ registered: false, message: 'User not found' });
+        res.status(404).json({ message: 'User not found' });
       }
     } catch (error) {
-      res.status(500).json({ registered: false, message: 'An error occurred', error: error.message });
+      res.status(500).json({ message: 'An error occurred', error: error.message });
     }
   } else {
-    res.json({ registered: false });
+    res.json({ message: 'Not authenticated' });
   }
 });

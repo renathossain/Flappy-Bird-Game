@@ -32,7 +32,7 @@ passport.use(new GoogleStrategy({
         // Create new user
         user = await User.create({
           ...userData,
-          current_skin: 1 // Set default skin ID
+          currentSkin: 1 // Set default skin ID
         });
 
         // Assign skins (IDs 1, 2, 3) to the new user

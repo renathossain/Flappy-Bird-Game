@@ -1,6 +1,17 @@
 <script lang="ts">
-  let code: string = "";
-  const onlyNumbers = () => (code = code.replace(/\D*(\d{0,4}).*/, "$1"));
+  import { code } from "../../store";
+  let codeValue: string = "";
+
+  // Subscribe to the store and initialize codeValue
+  $: code.subscribe((value) => {
+    codeValue = value !== null ? value.toString() : "";
+  });
+
+  const onlyNumbers = () => {
+    // Keep only the first 4 digits and update the store
+    codeValue = codeValue.replace(/\D*(\d{0,4}).*/, "$1");
+    code.set(codeValue !== "" ? Number(codeValue) : null);
+  };
 </script>
 
 <div class="container1">
@@ -8,8 +19,8 @@
     <input
       class="container3"
       type="text"
-      placeholder="Enter the Code"
-      bind:value={code}
+      placeholder="Enter Code"
+      bind:value={codeValue}
       on:input={onlyNumbers}
     />
   </div>
@@ -32,10 +43,11 @@
   .container3 {
     text-align: center;
     font-family: "RetroGaming", sans-serif;
-    font-size: 50px;
+    font-size: 4vmin;
     background-color: #fcfdfb;
     padding: 10px;
     border: none;
+    width: 20vw;
   }
 
   .container3:focus {

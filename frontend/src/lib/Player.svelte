@@ -1,42 +1,92 @@
-<script>
+<script lang="ts">
+  import BigButton from "./components/BigButton.svelte";
+  import Button from "./components/Button.svelte";
+  import Unauthorized from "./Unauthorized.svelte";
+  import { user, code } from "../store";
   import { onMount } from "svelte";
-  import io from "socket.io-client";
+  import io, { Socket } from "socket.io-client";
 
-  // Initialize constants
-  export let username;
-  const socket = io("http://localhost:3000");
+  let socket: Socket;
+  let jumpFunction = () => {};
+  let lobbySocket: string = "";
 
-  // Make your flappy jump
-  const jumpFunction = () => {
-    socket.emit("jump", username);
+  const setupJumpFunction = () => {
+    jumpFunction = () => {
+      if ($user && lobbySocket != "") {
+        socket.emit("jump", {
+          userId: $user.id,
+          lobbySocket: lobbySocket,
+        });
+      }
+    };
   };
 
-  // Adding event listener for spacebar on mount
   onMount(() => {
-    window.addEventListener("keydown", (event) => {
-      if (event.key === " " || event.key === "Spacebar") {
+    socket = io("http://localhost:3000");
+
+    socket.on("connect", () => {
+      if ($user && $code !== null) {
+        socket.emit("lobby-join", {
+          userId: $user.id,
+          lobbyId: $code,
+        });
+      }
+    });
+
+    socket.on("send-lobby-socket", (data) => {
+      lobbySocket = data;
+      setupJumpFunction();
+    });
+
+    window.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.key === " ") {
         jumpFunction();
       }
     });
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
   });
 </script>
 
-<div class="container">
-  <button on:click={jumpFunction}>Tap to Fly</button>
-</div>
+{#if lobbySocket != ""}
+  <div class="container">
+    <div class="big-button-container">
+      <BigButton text="Tap\Press Space To Fly" onClick={jumpFunction} />
+    </div>
+    <div class="controls">
+      <Button text="Leave the Game" link="/" />
+    </div>
+  </div>
+{:else}
+  <Unauthorized />
+{/if}
 
 <style>
   .container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 90vh; /* 90% of viewport height */
+    width: 90vw; /* 90% of viewport width */
+    margin: auto; /* Center horizontally */
   }
 
-  button {
-    height: 80%;
-    width: 80%;
-    display: block;
-    font-size: 80px;
+  .controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end; /* Align to the bottom */
+    column-gap: 20px;
+    padding: 10px; /* Optional padding */
+  }
+
+  .big-button-container {
+    flex: 1; /* Allow this to take the remaining space */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>
