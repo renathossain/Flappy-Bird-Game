@@ -28,6 +28,14 @@
 - `cd frontend`
 - `npm install`
 - `npm run build`
+- `cd deployment/nginx`
+- `sudo rm /etc/nginx/sites-available/default`
+- `sudo rm /etc/nginx/sites-enabled/default`
+- `sudo cp flappy-bird-game /etc/nginx/sites-available/`
+- `sudo ln -s /etc/nginx/sites-available/flappy-bird-game /etc/nginx/sites-enabled/`
+- `sudo nginx -t`
+- `sudo systemctl enable nginx`
+- `sudo systemctl restart nginx`
 - Serve the built files:
 - `sudo npm install -g serve`
 - `serve -s dist`
