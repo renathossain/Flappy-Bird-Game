@@ -2,6 +2,7 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import dotenv from 'dotenv';
 import { User, PurchasedSkins } from './models/users.js';
+
 dotenv.config();
 
 passport.use(new GoogleStrategy({

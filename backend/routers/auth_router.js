@@ -1,6 +1,8 @@
 import { Router } from "express";
 import passport from 'passport'
 
+dotenv.config();
+
 export const authRouter = Router();
 
 authRouter.get('/auth/google', passport.authenticate('google', {
@@ -9,15 +11,15 @@ authRouter.get('/auth/google', passport.authenticate('google', {
 
 authRouter.get('/auth/google/callback',
 	passport.authenticate('google', {
-		successRedirect: 'http://localhost:5173/',
-		failureRedirect: 'http://localhost:5173/'
+		successRedirect: process.env.FRONTEND_URL,
+		failureRedirect: process.env.FRONTEND_URL,
 	})
 );
 
 authRouter.get('/auth/logout', (req, res) => {
 	req.logout(() => {
 		req.session.destroy(() => {
-			res.redirect('http://localhost:5173/');
+			res.redirect(process.env.FRONTEND_URL);
 		});
 	});
 });
