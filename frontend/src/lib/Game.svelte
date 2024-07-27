@@ -2,7 +2,6 @@
   import Konva from "konva";
   import { onMount, onDestroy } from "svelte";
   import { Socket } from "socket.io-client";
-  import { navigate } from "svelte-routing";
 
   // Imported variables
   export let socket: Socket | null = null;
