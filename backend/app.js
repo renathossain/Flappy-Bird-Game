@@ -24,7 +24,7 @@ export const app = express();
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL,
+  origin: "http://localhost:5173",
   credentials: true,
 };
 app.use(cors(corsOptions));
@@ -37,6 +37,9 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+// Trust first proxy
+app.set('trust proxy', 1);
 
 // Function to start the server
 const startServer = async () => {
