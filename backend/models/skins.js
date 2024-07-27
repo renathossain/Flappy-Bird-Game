@@ -7,6 +7,7 @@ export const Skin = sequelize.define("skins", {
     type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,
+    autoIncrement: false,
   },
   price : {
     type: DataTypes.INTEGER,
@@ -18,45 +19,42 @@ export const Skin = sequelize.define("skins", {
   },
 });
 
+const generateSkinsData = (id, price) => {
+  return {
+    id: id, 
+    price: price,
+    imageMetadata: {
+      "filename": `${id}.png`,
+      "originalname": `${id}.png`,
+      "mimetype": "image/png",
+      "path": `/assets/flappies/${id}.png`,
+    },
+  }
+};
+
 // Ensure the skins table has predefined skins 1, 2, 3
 Skin.afterSync(async () => {
+  const skins = []
+  const totalSkin = 20;
+  for (let i = 1; i <= 3; i++) {
+    skins.push(generateSkinsData(i, 0));
+  }
+  for(let i = 4; i <= totalSkin-5; i++){
+    skins.push(generateSkinsData(i, 1));
+  }
+  for(let i = totalSkin-4; i <= totalSkin; i++){
+    skins.push(generateSkinsData(i, 2));
+  }
 
-  await Skin.findOrCreate({ where: { id: 1 },
-  defaults: {
-    price: 0,
-    imageMetadata: {
-      "filename": "1.png",
-      "originalname": "1.png",
-      "mimetype": "image/png",
-      "path": "/assets/flappies/1.png",
-    },
-  },
-  });
-
-    await Skin.findOrCreate({ where: { id: 2 },
-    defaults: {
-      price: 0,
-      imageMetadata: {
-        "filename": "2.png",
-        "originalname": "2.png",
-        "mimetype": "image/png",
-        "path": "/assets/flappies/2.png",
-      },
-    },
-    });
-
-
-    await Skin.findOrCreate({ where: { id: 3 },
+  for (const skin of skins){
+    await Skin.findOrCreate({
+      where: { id: skin.id },
       defaults: {
-        price: 0,
-        imageMetadata: {
-          "filename": "3.png",
-          "originalname": "3.png",
-          "mimetype": "image/png",
-          "path": "/assets/flappies/3.png",
-        },
+        price: skin.price,
+        imageMetadata: skin.imageMetadata,
       }
     });
+  }
 });
 
 

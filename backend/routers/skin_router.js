@@ -9,6 +9,7 @@ const upload = multer({ dest: "uploads/" });
 
 export const skinRouter = Router();
 
+//this is for testing purposes only
 skinRouter.post("/:id", upload.single("picture"), async (req, res, next) => {
     try{
         const maxId = await Skin.max('id');

@@ -51,7 +51,7 @@
         <div class='skins'>
             {#each skins as skin}
                 <Card id={skin.id} price={skin.price} 
-                image={skin.id <= 3 ? skin.imagePath: `${backendBaseUrl}/${skin.imagePath}`}
+                image={skin.imagePath}
                 buttonText={skin.id <= 3? "User Skin": "Purchase"}></Card>
             {/each}
         </div>
