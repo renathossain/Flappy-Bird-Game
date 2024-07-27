@@ -33,7 +33,7 @@
 	};
 
 	const joinLobby = async () => {
-		if ($user && $code !== null) {
+		if ($user) {
 			if ($code !== null && /^\d{4}$/.test($code.toString())) {
 				const res = await fetch("/api/lobby/join", {
 					method: "POST",
