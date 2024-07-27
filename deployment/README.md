@@ -24,6 +24,11 @@
 - Backend Setup:
 - `cd backend`
 - `npm install`
+- `npm install -g pm2`
+- `pm2 start app.js --name backend`
+- `pm2 list` - verify its running
+- `pm2 startup systemd` - generate command to make it run on startup
+- `pm2 restart backend`
 - Frontend Setup:
 - `cd frontend`
 - `npm install`
@@ -33,8 +38,8 @@
 - `sudo cp flappy-bird-game /etc/nginx/sites-available/`
 - `sudo ln -s /etc/nginx/sites-available/flappy-bird-game /etc/nginx/sites-enabled/`
 - `sudo nginx -t`
-- `sudo systemctl enable nginx`
 - `sudo systemctl restart nginx`
-- Serve the built files:
-- `sudo npm install -g serve`
-- `serve -s dist`
+- Access the website on: http://http://34.121.49.238/ (Note: http without s)
+
+# Update the server with new changes
+- `./update-server.sh`

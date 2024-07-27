@@ -4,7 +4,27 @@ server {
 
     # Serve static files from the frontend build directory
     location / {
-        root /home/username/project-overreact-native/frontend/dist;
+        root /home/renathossain/project-overreact-native/frontend/dist;
         try_files $uri $uri/ /index.html;
     }
+
+    # Proxy requests to the backend API
+    location /api/ {
+        proxy_pass http://localhost:3000; # Adjust the port if your backend runs on a different port
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Proxy requests to the /auth endpoint to the backend server
+    location /auth/ {
+        proxy_pass http://localhost:3000; # Adjust the port if necessary
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
 }
+
+
