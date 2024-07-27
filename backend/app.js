@@ -13,6 +13,11 @@ import { User, PurchasedSkins } from "./models/users.js";
 import { Lobby, LobbyUser } from "./models/lobby.js";
 import initializeSocket from "./socket.js";
 import './oauth.js';
+import { fileURLToPath } from 'url';
+import path from "path";
+import { skinRouter } from "./routers/skin_router.js";
+import { stripeRouter } from "./routers/stripe_router.js";
+
 
 dotenv.config();
 
@@ -20,9 +25,15 @@ const PORT = 3000;
 
 export const app = express();
 
-// Middleware
+
 app.use(bodyParser.json());
 
+// Serve static files
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Middleware
 const corsOptions = {
   origin: "http://localhost:5173",
   credentials: true,
@@ -60,6 +71,8 @@ const startServer = async () => {
     app.use("/", authRouter);
     app.use("/", userRouter);
     app.use("/", lobbyRouter);
+    app.use("/api/skin", skinRouter);
+    app.use("/api/stripe", stripeRouter);
 
     // Start server and initialize Socket.IO
     const server = app.listen(PORT, () => {
