@@ -29,7 +29,6 @@
 - `npm install`
 - `npm run build`
 - `cd deployment/nginx`
-- `sudo rm /etc/nginx/sites-available/default`
 - `sudo rm /etc/nginx/sites-enabled/default`
 - `sudo cp flappy-bird-game /etc/nginx/sites-available/`
 - `sudo ln -s /etc/nginx/sites-available/flappy-bird-game /etc/nginx/sites-enabled/`
