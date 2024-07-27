@@ -24,7 +24,7 @@ export const app = express();
 app.use(bodyParser.json());
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND_URL,
   credentials: true,
 };
 app.use(cors(corsOptions));
