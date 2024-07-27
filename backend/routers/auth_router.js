@@ -11,15 +11,15 @@ authRouter.get('/auth/google', passport.authenticate('google', {
 
 authRouter.get('/auth/google/callback',
 	passport.authenticate('google', {
-		successRedirect: process.env.FRONTEND_URL,
-		failureRedirect: process.env.FRONTEND_URL,
+		successRedirect: "http://localhost:5173",
+		failureRedirect: "http://localhost:5173",
 	})
 );
 
 authRouter.get('/auth/logout', (req, res) => {
 	req.logout(() => {
 		req.session.destroy(() => {
-			res.redirect(process.env.FRONTEND_URL);
+			res.redirect("http://localhost:5173");
 		});
 	});
 });
