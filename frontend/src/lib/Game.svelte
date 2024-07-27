@@ -332,8 +332,7 @@
       startCountdown();
     } else {
       // Display the start message for single-player
-
-      drawTopText("Game Over");
+      drawTopText("Start Game");
     }
 
     // Handle spacebar events
