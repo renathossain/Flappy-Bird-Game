@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name _; # Use _ to match any hostname (suitable for IP access)
+    server_name flappybirdgame.me www.flappybirdgame.me;
 
     # Serve static files from the frontend build directory
     location / {
@@ -26,5 +26,3 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
-
-
