@@ -47,9 +47,9 @@
   }
 
   async function handleUseSkin(skinId: number) {
-    if($user){
+    if ($user) {
       const response = await fetch(`/api/skin/change`, {
-        method: "PATCH", 
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -57,12 +57,12 @@
           userId: $user.id,
           skinId: skinId,
         }),
-      })
+      });
       const data = await response.json();
       if(data){
         $user.currentSkin = skinId;
         console.log("Skin changed successfully");
-      }else{
+      } else {
         console.log("Issue changing skin");
       }
     }
@@ -71,7 +71,7 @@
 
 <div class="arcade-container">
   <div class="arcade-text">
-    Skin No: {id}
+    Skin {id}
   </div>
   <div class="arcade-image">
     <img src={image} alt={"/assets/picture.png"} />
@@ -79,8 +79,9 @@
   <div class="arcade-price">
     <p>Price: ${price}</p>
     {#if purchased}
-      <button class="arcade-button"
-      on:click={() => handleUseSkin(id)}>Use Skin</button>
+      <button class="arcade-button" on:click={() => handleUseSkin(id)}
+        >Use Skin</button
+      >
     {:else}
       <button
         class="arcade-button"
@@ -92,26 +93,25 @@
 
 <style>
   .arcade-text {
-    color: white;
-    text-align: center;
+    font-family: "RetroGaming", sans-serif;
+    color: #553000;
     font-size: 1.5rem;
-    margin-bottom: 10px;
-    text-shadow:
-      -2px 0 0 #fdff2a,
-      -4px 0 0 #df4a42,
-      2px 0 0 #91fcfe,
-      4px 0 0 #4405fc;
+    text-align: center;
   }
   .arcade-container {
-    backdrop-filter: blur(10px);
-    background-color: rgba(255, 255, 255, 0.2);
+    /* Glassy effect */
+    background-color: rgba(255, 255, 255, 0.2); /* semi-transparent white */
+    backdrop-filter: blur(10px); /* blur behind the element */
+    border-radius: 10px; /* rounded corners */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* subtle shadow */
+    transition: background-color 0.3s ease; /* smooth transition */
+
     display: flex;
     flex-direction: column;
     width: 90%;
     max-width: 400px;
-    border: 10px solid orange;
+    border: 4px solid #543847;
     margin: 50px auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     color: red;
     font-family: "Press Start 2P", cursive;
     text-align: center;
