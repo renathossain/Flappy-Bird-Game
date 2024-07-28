@@ -33,7 +33,8 @@
   };
 
   onMount(() => {
-    socket = io("http://localhost:3000");
+    const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+    socket = io(SOCKET_URL);
 
     socket.on("connect", () => {
       if ($user && $host) {
