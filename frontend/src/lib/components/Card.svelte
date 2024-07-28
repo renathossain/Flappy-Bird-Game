@@ -14,19 +14,9 @@
   export let purchased: boolean;
 
   let stripe;
-  let purchasedSkins: number[] = [];
 
   onMount(async () => {
     stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-
-    // if ($user) {
-    //   console.log("hellooooo");
-    //   const res = await fetch(`/api/purchase?userId=${$user.id}&skinId=${id}`);
-    //   const data = await res.json();
-    //   if (data) {
-    //     purchasedSkins = data.purchasedSkins;
-    //   }
-    // }
   });
 
   async function handlePurchase(
@@ -56,7 +46,26 @@
     }
   }
 
-  async function handleUseSkin() {}
+  async function handleUseSkin(skinId: number) {
+    if($user){
+      const response = await fetch(`/api/skin/change`, {
+        method: "PATCH", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: $user.id,
+          skinId: skinId,
+        }),
+      })
+      const data = await response.json();
+      if(data){
+        console.log("Skin changed successfully");
+      }else{
+        console.log("Issue changing skin");
+      }
+    }
+  }
 </script>
 
 <div class="arcade-container">
@@ -69,7 +78,8 @@
   <div class="arcade-price">
     <p>Price: ${price}</p>
     {#if purchased}
-      <button class="arcade-button">Use Skin</button>
+      <button class="arcade-button"
+      on:click={() => handleUseSkin(id)}>Use Skin</button>
     {:else}
       <button
         class="arcade-button"

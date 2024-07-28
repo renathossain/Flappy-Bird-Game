@@ -10,7 +10,7 @@
     let prevCursor: number | null = null;
     let nextCursor: number | null = null;
     let limit = 5;
-
+    
     async function getSkins(cursor: number | null, action: string | null) {
         if ($user) {
             const res = await fetch(
@@ -44,8 +44,9 @@
 
 <main>
     <div class="header">
+        <Button text="Main" link="/"></Button>
         <!-- maybe needs registration because users can do /store and get to this route without being registered -->
-        <Button text="Sign Out" link="/auth/logout"></Button>
+        <Button text="Sign Out" link="/api/auth/logout"></Button>
     </div>
     <div class="container">
         <div class="skins">

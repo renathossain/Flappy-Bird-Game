@@ -1,59 +1,11 @@
 import { Router } from "express";
-import multer from "multer";
-import path from "path";
 import { Skin } from "../models/skins.js";
 import { Op } from "sequelize";
 import { PurchasedSkins } from "../models/users.js";
 import { User } from "../models/users.js";
 
 
-const upload = multer({ dest: "uploads/" });
-
 export const skinRouter = Router();
-
-//this is for testing purposes only
-skinRouter.post("/:id", upload.single("picture"), async (req, res, next) => {
-    try{
-        const maxId = await Skin.max('id');
-        const nextId = maxId ? maxId+1: 1;
-        const skin = await Skin.create({
-            id: nextId,
-            price: req.body.price,
-            imageMetadata: req.file,    
-        })
-    }catch(error){
-        if(error.name === "SequelizeForeignKeyConstraintError"){
-            return res.status(422).json({ error: "Invalid skin id" });
-        }else if (error.name === "SequelizeValidationError"){
-            return res.status(422).json({
-                error:
-                  "Invalid input parameters. Expected id, price and imageMetadata",
-              });
-        }else{
-            return res.status(500).json({ error: error.message  });
-        }
-    }
-});
-
-//this is for testing purposes only
-skinRouter.get("/all", async (req, res, next) => {
-    try{
-        const skins = await Skin.findAll();
-
-        const skinData = skins.map(skin => ({
-                id: skin.id,
-                price: skin.price,
-                imageMetadata: {
-                    mimetype: skin.imageMetadata.mimetype,
-                    path: skin.imageMetadata.path,
-            }
-        }));
-        return res.json({ data: skinData });
-    }catch(err){
-        return res.status(400).json({ error: err.message });
-    }
-}
-);
 
 skinRouter.get("/", async (req, res, next) => {
     try{
@@ -128,4 +80,32 @@ skinRouter.get("/", async (req, res, next) => {
     }catch(err){
         return res.status(400).json({ error: err.message });
     }
-})
+});
+
+skinRouter.patch("/change", async (req, res, next) => {
+    const userId = req.body.userId;
+    const skinId = req.body.skinId;
+    try{
+        const user = await User.findOne({
+            where: { id: userId }
+        });
+        if (!user){
+            return res.status(404).json({ error: "User not found." });
+        }
+        const purchasedSkin = await PurchasedSkins.findOne({
+            where: {
+                userId: userId,
+                skinId: skinId,
+            }
+        });
+        if (!purchasedSkin){
+            return res.status(404).json({ error: "Skin not purchased." });
+        }
+        user.currentSkin = skinId;
+        await user.save();
+        return res.status(200).json({ message: "Skin changed successfully." });
+    }catch(err){
+        return res.status(400).json({ error: err.message });
+    }
+
+});
