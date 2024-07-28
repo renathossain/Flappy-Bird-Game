@@ -6,20 +6,24 @@
 
   import { loadStripe } from '@stripe/stripe-js';
   import { onMount } from 'svelte';
+  import { user } from "../../store.ts";
 
     export let id: number;
     export let price: number;
     export let image: string;
     export let buttonText: string;
     let stripe;
-
     onMount(async () => {
       stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
     });
 
     const backendBaseUrl = "http://localhost:3000";
 
-    async function handlePurchase(price: number, currency: string) {
+    async function handlePurchase(skinId: number, price: number, currency: string) {
+      let UserId = null
+        if($user){
+          UserId = $user.id;
+        }
       const response = await fetch(`${backendBaseUrl}/api/stripe/charge`, {
         method: 'POST',
         headers: {
@@ -28,6 +32,8 @@
         body: JSON.stringify({
           price: price,
           currency: currency,
+          userId: UserId,
+          skinId: skinId,
         })
       });
       const data = await response.json();
@@ -53,7 +59,7 @@
     <div class='arcade-price'>
       <p>Price: ${price}</p>
       {#if buttonText === 'Purchase'}
-        <button class='arcade-button' on:click={() => handlePurchase(price, 'usd')}>{buttonText}</button>
+        <button class='arcade-button' on:click={() => handlePurchase(id, price, 'usd')}>{buttonText}</button>
       {:else}
         <button class='arcade-button'>{buttonText}</button>
       {/if}
