@@ -10,9 +10,9 @@
     let prevCursor: number | null = null;
     let nextCursor: number | null = null;
     let limit = 5;
-    
+
     async function getSkins(cursor: number | null, action: string | null) {
-       if ($user) {
+        if ($user) {
             const res = await fetch(
                 `/api/skin/?cursor=${cursor}&action=${action}&userId=${$user.id}`,
             );
@@ -27,7 +27,7 @@
             });
             prevCursor = data.prev;
             nextCursor = data.next;
-       }
+        }
     }
 
     function handleNext() {
@@ -86,7 +86,10 @@
         display: grid;
         column-gap: 20px;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }   
+        justify-content: center; /* Center the cards horizontally */
+        flex-wrap: wrap; /* Allow wrapping of cards if they don't fit in one line */
+        gap: 20px; /* Adjust the gap between cards */
+    }
     .buttons-pagination {
         display: flex;
         justify-content: space-between;
@@ -98,7 +101,7 @@
         z-index: 1;
     }
     .container {
-        flex:1;
+        flex: 1;
         width: 90vw;
         height: 80vh;
         margin: 20px;
@@ -118,5 +121,4 @@
     .next-button {
         margin-left: auto;
     }
-
 </style>
