@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import { PurchasedSkins } from "../models/users.js";
 import express from "express";
+import { isLoggedIn } from "../middleware/auth.js";
 
 //Stripe
 //https://github.com/stripe/stripe-node
@@ -17,7 +18,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2024-06-20',
 });
 
-stripeRouter.post('/charge', async (req, res) => {
+// isLoggedin added - testing required
+stripeRouter.post('/charge', isLoggedIn, async (req, res) => {
   const price = req.body.price;
   const currency = req.body.currency;
   const skinId = req.body.skinId;
@@ -53,7 +55,7 @@ stripeRouter.post('/charge', async (req, res) => {
 });
 
 //sucess url
-stripeRouter.get('/success', async (req, res) => {
+stripeRouter.get('/success', isLoggedIn, async (req, res) => {
   const session_id = req.query.session_id;
   try {
     const checkout_session = await stripe.checkout.sessions.retrieve(session_id);
@@ -75,7 +77,7 @@ stripeRouter.get('/success', async (req, res) => {
 });
 
 
-stripeRouter.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+stripeRouter.post('/webhook', isLoggedIn, express.raw({ type: 'application/json' }), async (req, res) => {
   const endpointSecret = "whsec_771d739871c20f698b80dd740452fc67098a4c63b038f3c1ac1f2741c4ffcd07";
   const sig = req.headers['stripe-signature'];
   let event;

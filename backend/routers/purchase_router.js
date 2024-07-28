@@ -3,6 +3,7 @@ import { PurchasedSkins } from "../models/users.js";
 
 export const purchaseRouter = Router();
 
+//can delete later maybe
 purchaseRouter.get("/", async (req, res) => {
   const userId = req.query.userId;
   try {

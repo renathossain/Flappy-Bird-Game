@@ -3,11 +3,13 @@ import { Skin } from "../models/skins.js";
 import { Op } from "sequelize";
 import { PurchasedSkins } from "../models/users.js";
 import { User } from "../models/users.js";
+import { isLoggedIn } from "../middleware/auth.js";
 
 
 export const skinRouter = Router();
 
-skinRouter.get("/", async (req, res, next) => {
+// isLoggedin added - testing required
+skinRouter.get("/", isLoggedIn, async (req, res, next) => {
     try{
         const {cursor, limit, action, userId} = req.query;
         let skins;
@@ -82,7 +84,7 @@ skinRouter.get("/", async (req, res, next) => {
     }
 });
 
-skinRouter.patch("/change", async (req, res, next) => {
+skinRouter.patch("/change", isLoggedIn, async (req, res, next) => {
     const userId = req.body.userId;
     const skinId = req.body.skinId;
     try{
