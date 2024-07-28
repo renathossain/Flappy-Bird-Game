@@ -9,7 +9,7 @@ export const Skin = sequelize.define("skins", {
     primaryKey: true,
     autoIncrement: false,
   },
-  price : {
+  price: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -21,7 +21,7 @@ export const Skin = sequelize.define("skins", {
 
 const generateSkinsData = (id, price) => {
   return {
-    id: id, 
+    id: id,
     price: price,
     imageMetadata: {
       "filename": `${id}.png`,
@@ -36,17 +36,17 @@ const generateSkinsData = (id, price) => {
 Skin.afterSync(async () => {
   const skins = []
   const totalSkin = 20;
-  for (let i = 1; i <= 3; i++) {
+  for (let i = 1; i <= 4; i++) {
     skins.push(generateSkinsData(i, 0));
   }
-  for(let i = 4; i <= totalSkin-5; i++){
+  for (let i = 5; i <= totalSkin - 5; i++) {
     skins.push(generateSkinsData(i, 1));
   }
-  for(let i = totalSkin-4; i <= totalSkin; i++){
+  for (let i = totalSkin - 4; i <= totalSkin; i++) {
     skins.push(generateSkinsData(i, 2));
   }
 
-  for (const skin of skins){
+  for (const skin of skins) {
     await Skin.findOrCreate({
       where: { id: skin.id },
       defaults: {
@@ -59,4 +59,3 @@ Skin.afterSync(async () => {
 
 
 
-      

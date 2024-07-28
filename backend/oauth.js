@@ -37,7 +37,7 @@ passport.use(new GoogleStrategy({
         });
 
         // Assign skins (IDs 1, 2, 3) to the new user
-        const skinIds = [1, 2, 3];
+        const skinIds = [1, 2, 3, 4];
         const purchasedSkins = skinIds.map(skinId => ({
           userId: user.id,
           skinId
