@@ -64,11 +64,11 @@
 	{#if $user}
 		<div class="auth">
 			<ProfilePic />
-			<Button text="Sign Out" link="/auth/logout" fontSize="3vmin" />
+			<Button text="Sign Out" link="/api/auth/logout" fontSize="3vmin" />
 			<Button text="Skins" link="/store" fontSize="3vmin" />
 		</div>
 	{:else}
-		<Button text="Sign In" link="/auth/google" />
+		<Button text="Sign In" link="/api/auth/google" />
 	{/if}
 </div>
 
