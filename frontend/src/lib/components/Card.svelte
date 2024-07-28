@@ -92,11 +92,8 @@
 <style>
   .arcade-text {
     color: white;
-    position: absolute;
-    width: 100%;
     text-align: center;
-    margin: auto;
-    font-size: 2vw;
+    font-size: 1.5rem;
     margin-bottom: 10px;
     text-shadow:
       -2px 0 0 #fdff2a,
@@ -110,7 +107,7 @@
     display: flex;
     flex-direction: column;
     width: 90%;
-    max-width: 600px;
+    max-width: 400px;
     border: 10px solid orange;
     margin: 50px auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
