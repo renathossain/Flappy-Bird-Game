@@ -78,6 +78,7 @@
         position: absolute;
         top: 20px;
         right: 20px;
+        z-index: 1;
     }
     .skins {
         margin-bottom: 20px;
@@ -96,6 +97,7 @@
         width: 85vw;
     }
     .container {
+        flex:1;
         width: 90vw;
         height: 80vh;
         margin: 20px;
