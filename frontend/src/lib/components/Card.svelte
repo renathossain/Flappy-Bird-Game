@@ -48,7 +48,7 @@
   }
 
   async function handleUseSkin(skinId: number) {
-   // if ($user) {
+   if ($user) {
       const response = await fetch(`/api/skin/change`, {
         method: "PATCH",
         headers: {
@@ -67,6 +67,7 @@
         }else {
         console.log("Issue changing skin");
       }
+    }
   }
 </script>
 

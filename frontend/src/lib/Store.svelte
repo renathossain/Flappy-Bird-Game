@@ -13,7 +13,7 @@
     let limit = 5;
 
     async function getSkins(cursor: number | null, action: string | null) {
-        //if ($user) {
+        if ($user) {
         console.log("hello")
             const res = await fetch(
                 `/api/skin/?cursor=${cursor}&action=${action}&userId=115552404743840019755`,
@@ -30,7 +30,7 @@
             prevCursor = data.prev;
             nextCursor = data.next;
             currentSkin = data.currentSkin;
-        //}
+        }
     }
 
     function handleNext() {
@@ -89,7 +89,7 @@
         flex: auto;
         display: grid;
         column-gap: 20px;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        /* grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); */
         justify-content: center; /* Center the cards horizontally */
         flex-wrap: wrap; /* Allow wrapping of cards if they don't fit in one line */
         gap: 20px; /* Adjust the gap between cards */
@@ -125,4 +125,20 @@
     .next-button {
         margin-left: auto;
     }
+
+    /* larger screens */
+
+    @media (min-width: 1200px) { 
+    .skins {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* smaller screens */
+@media (max-width: 1199px) {
+    .skins {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    }
+}
+
 </style>
