@@ -11,13 +11,25 @@
     export let id: number;
     export let price: number;
     export let image: string;
-    export let buttonText: string;
+    
     let stripe;
+    const backendBaseUrl = "http://localhost:3000";
+
+    let purchasedSkins: number[] = [];
+
     onMount(async () => {
       stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+      if ($user){
+        console.log("hellooooo")
+        const res = await fetch(`${backendBaseUrl}/api/purchase?userId=${$user.id}&skinId=${id}`);
+        const data = await res.json();
+        if (data){
+          purchasedSkins = data.purchasedSkins;
+        }
+      }
     });
 
-    const backendBaseUrl = "http://localhost:3000";
+
 
     async function handlePurchase(skinId: number, price: number, currency: string) {
       let UserId = null
@@ -58,10 +70,10 @@
     </div>
     <div class='arcade-price'>
       <p>Price: ${price}</p>
-      {#if buttonText === 'Purchase'}
-        <button class='arcade-button' on:click={() => handlePurchase(id, price, 'usd')}>{buttonText}</button>
+      {#if purchasedSkins.includes(id)}
+        <button class='arcade-button'>Use Skin</button>
       {:else}
-        <button class='arcade-button'>{buttonText}</button>
+      <button class='arcade-button' on:click={() => handlePurchase(id, price, 'usd')}>Purchase</button>
       {/if}
     </div>
   </div>

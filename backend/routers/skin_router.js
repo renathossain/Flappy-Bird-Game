@@ -3,6 +3,8 @@ import multer from "multer";
 import path from "path";
 import { Skin } from "../models/skins.js";
 import { Op } from "sequelize";
+import { PurchasedSkins } from "../models/users.js";
+import { User } from "../models/users.js";
 
 
 const upload = multer({ dest: "uploads/" });
@@ -55,7 +57,7 @@ skinRouter.get("/all", async (req, res, next) => {
 
 skinRouter.get("/", async (req, res, next) => {
     try{
-        const {cursor, limit, action} = req.query;
+        const {cursor, limit, action, userId} = req.query;
         let skins;
         let prevCursor;
         let nextCursor;
@@ -89,6 +91,34 @@ skinRouter.get("/", async (req, res, next) => {
             prevCursor = skins.length ? skins[0]["id"] : null;
             nextCursor = skins.length ? skins[skins.length - 1]["id"] : null;
         }
+
+        if (userId){
+            const user = await User.findOne({
+                where: { id: userId }
+              });
+              if(user){
+                const purchasedSkins = await PurchasedSkins.findAll({
+                    where: {
+                        userId: userId,
+                    }
+                });
+                const purchasedSkinIds = purchasedSkins.map(purchasedSkin => purchasedSkin.skinId);
+                skins = skins.map(skin => ({
+                    ...skin.dataValues,
+                    purchased: purchasedSkinIds.includes(skin.id),
+                }))
+              }else{
+                skins = skins.map(skin => ({
+                    ...skin.dataValues,
+                    purchased: false,
+                }))
+              }
+        }else{
+            skins = skins.map(skin => ({
+                ...skin.dataValues,
+                purchased: false,
+            }))
+        }   
         return res.json({
             data: skins,
             next: nextCursor,

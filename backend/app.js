@@ -17,6 +17,7 @@ import { fileURLToPath } from 'url';
 import path from "path";
 import { skinRouter } from "./routers/skin_router.js";
 import { stripeRouter } from "./routers/stripe_router.js";
+import { purchaseRouter } from "./routers/purchase_router.js";
 
 
 dotenv.config();
@@ -73,6 +74,7 @@ const startServer = async () => {
     app.use("/", lobbyRouter);
     app.use("/api/skin", skinRouter);
     app.use("/api/stripe", stripeRouter);
+    app.use("/api/purchase", purchaseRouter);
 
     // Start server and initialize Socket.IO
     const server = app.listen(PORT, () => {

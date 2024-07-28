@@ -30,7 +30,6 @@
        if (nextCursor) getSkins(nextCursor, 'next');
     }
     function handlePrev(){
-        console.log('prevCursor:', prevCursor);
         if (prevCursor) getSkins(prevCursor, 'prev');
     }
 
@@ -52,7 +51,7 @@
             {#each skins as skin}
                 <Card id={skin.id} price={skin.price} 
                 image={skin.imagePath}
-                buttonText={skin.id <= 3? "User Skin": "Purchase"}></Card>
+                ></Card>
             {/each}
         </div>
         <div class="buttons-pagination">
