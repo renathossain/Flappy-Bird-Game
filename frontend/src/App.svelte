@@ -7,6 +7,7 @@
   import Game from "./lib/Game.svelte";
   import Player from "./lib/Player.svelte";
   import { user } from "./store";
+  import Store from "./lib/Store.svelte";
 
   onMount(async () => {
     const res = await fetch("/api/user");
@@ -17,6 +18,7 @@
 
 <Router>
   <Route path="/" component={Main} />
+  <Route path="/store" component={Store}/>
   <Protected path="/lobby" component={Lobby} />
   <Route path="/game" component={Game} />
   <Protected path="/player" component={Player} />
