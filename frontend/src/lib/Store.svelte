@@ -95,6 +95,7 @@
         bottom: 60px;
         padding: 0 20px;
         width: 85vw;
+        z-index: 1;
     }
     .container {
         flex:1;
