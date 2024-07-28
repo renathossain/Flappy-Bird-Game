@@ -12,6 +12,7 @@
   export let price: number;
   export let image: string;
   export let purchased: boolean;
+  export let currentSkinNumber: number;
 
   let stripe;
 
@@ -47,25 +48,25 @@
   }
 
   async function handleUseSkin(skinId: number) {
-    if ($user) {
+   // if ($user) {
       const response = await fetch(`/api/skin/change`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: $user.id,
+          userId: "115552404743840019755",
           skinId: skinId,
         }),
       });
       const data = await response.json();
       if(data){
-        $user.currentSkin = skinId;
-        console.log("Skin changed successfully");
-      } else {
+        //the change was sucessful in the db
+        alert("Skin changed successfully!");
+        window.location.href = "/";
+        }else {
         console.log("Issue changing skin");
       }
-    }
   }
 </script>
 
@@ -79,11 +80,16 @@
   <div class="arcade-price">
     <p>Price: ${price}</p>
     {#if purchased}
-      <button class="arcade-button" on:click={() => handleUseSkin(id)}
+      {#if currentSkinNumber === id}
+      <button id={`current-skin-button-${id}`} class="arcade-button current">Current</button>
+      {:else}
+      <button id={`use-skin-button-${id}`} class="arcade-button" on:click={() => handleUseSkin(id)}
         >Use Skin</button
       >
+      {/if}
     {:else}
       <button
+        id={`purchase-button-${id}`}
         class="arcade-button"
         on:click={() => handlePurchase(id, price, "usd")}>Purchase</button
       >

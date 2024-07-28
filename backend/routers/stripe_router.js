@@ -19,7 +19,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 // isLoggedin added - testing required
-stripeRouter.post('/charge', isLoggedIn, async (req, res) => {
+stripeRouter.post('/charge', async (req, res) => {
   const price = req.body.price;
   const currency = req.body.currency;
   const skinId = req.body.skinId;
@@ -55,7 +55,7 @@ stripeRouter.post('/charge', isLoggedIn, async (req, res) => {
 });
 
 //sucess url
-stripeRouter.get('/success', isLoggedIn, async (req, res) => {
+stripeRouter.get('/success', async (req, res) => {
   const session_id = req.query.session_id;
   try {
     const checkout_session = await stripe.checkout.sessions.retrieve(session_id);

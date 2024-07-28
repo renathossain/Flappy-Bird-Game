@@ -9,12 +9,14 @@
     let skins: Skin[] = [];
     let prevCursor: number | null = null;
     let nextCursor: number | null = null;
+    let currentSkin: number = 1;
     let limit = 5;
 
     async function getSkins(cursor: number | null, action: string | null) {
-        if ($user) {
+        //if ($user) {
+        console.log("hello")
             const res = await fetch(
-                `/api/skin/?cursor=${cursor}&action=${action}&userId=${$user.id}`,
+                `/api/skin/?cursor=${cursor}&action=${action}&userId=115552404743840019755`,
             );
             const data = await res.json();
             skins = data.data.map((skin: any) => {
@@ -27,7 +29,8 @@
             });
             prevCursor = data.prev;
             nextCursor = data.next;
-        }
+            currentSkin = data.currentSkin;
+        //}
     }
 
     function handleNext() {
@@ -55,6 +58,7 @@
                     price={skin.price}
                     image={skin.imagePath}
                     purchased={skin.purchased}
+                    currentSkinNumber={currentSkin}
                 ></Card>
             {/each}
         </div>

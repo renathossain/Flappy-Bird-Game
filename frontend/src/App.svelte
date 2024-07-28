@@ -18,7 +18,7 @@
 
 <Router>
   <Route path="/" component={Main} />
-  <Protected path="/store" component={Store} />
+  <Route path="/store" component={Store} />
   <Protected path="/lobby" component={Lobby} />
   <Route path="/game" component={Game} />
   <Protected path="/player" component={Player} />

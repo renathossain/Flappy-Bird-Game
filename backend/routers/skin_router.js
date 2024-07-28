@@ -9,12 +9,13 @@ import { isLoggedIn } from "../middleware/auth.js";
 export const skinRouter = Router();
 
 // isLoggedin added - testing required
-skinRouter.get("/", isLoggedIn, async (req, res, next) => {
+skinRouter.get("/", async (req, res, next) => {
     try{
         const {cursor, limit, action, userId} = req.query;
         let skins;
         let prevCursor;
         let nextCursor;
+        let currentSkinId;
         if(cursor !== null && action === "prev"){
             skins = await Skin.findAll({
                 where:{
@@ -51,6 +52,7 @@ skinRouter.get("/", isLoggedIn, async (req, res, next) => {
                 where: { id: userId }
               });
               if(user){
+                currentSkinId = user.currentSkin; 
                 const purchasedSkins = await PurchasedSkins.findAll({
                     where: {
                         userId: userId,
@@ -78,13 +80,14 @@ skinRouter.get("/", isLoggedIn, async (req, res, next) => {
             next: nextCursor,
             prev: prevCursor,
             total: skins.length,
+            currentSkin: currentSkinId,
         });
     }catch(err){
         return res.status(400).json({ error: err.message });
     }
 });
 
-skinRouter.patch("/change", isLoggedIn, async (req, res, next) => {
+skinRouter.patch("/change", async (req, res, next) => {
     const userId = req.body.userId;
     const skinId = req.body.skinId;
     try{
@@ -111,3 +114,24 @@ skinRouter.patch("/change", isLoggedIn, async (req, res, next) => {
     }
 
 });
+
+
+
+//get users current skin if exists
+skinRouter.get("/:id", async (req, res, next) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findOne({
+            where: { id: userId },
+        });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        return res.json({
+            currentSkin: user.currentSkin,
+        });
+    } catch (err) {
+        return res.status(400).json({ error: err.message });
+    }
+}
+);
