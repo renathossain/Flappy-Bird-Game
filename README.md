@@ -10,7 +10,6 @@ _Deployed Website: https://flappybirdgame.me_
 | ------------- | ------------------------------ |
 | Renat Hossain | renat.hossain@mail.utoronto.ca |
 | Anika Sultana | anika.sultana@mail.utoronto.ca |
-| Brandon Lam   | brandon.lam@mail.utoronto.ca   |
 
 # Description of the Web App
 
