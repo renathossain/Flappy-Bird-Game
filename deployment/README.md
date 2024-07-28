@@ -1,7 +1,7 @@
 # DEPLOYMENT (UBUNTU)
 
 - `sudo apt update && sudo apt upgrade -y` (Takes at least 15 min on e2-micro)
-- `sudo apt install -y curl git nginx postgresql postgresql-contrib`
+- `sudo apt install -y curl git nginx postgresql postgresql-contrib certbot python3-certbot-nginx`
 - `git clone https://github.com/UTSC-CSCC09-Programming-on-the-Web/project-overreact-native.git`
 - PostgreSQL Setup:
 - `sudo -u postgres psql` to get inside the postgres user to set password
@@ -39,6 +39,8 @@
 - `sudo ln -s /etc/nginx/sites-available/flappy-bird-game /etc/nginx/sites-enabled/`
 - `sudo nginx -t`
 - `sudo systemctl restart nginx`
+- Obtain Let's Encrypt Certificate for HTTS:
+- `sudo certbot --nginx`
 - Access the website on: http://http://34.121.49.238/ (Note: http without s)
 
 # Update the server with new changes
