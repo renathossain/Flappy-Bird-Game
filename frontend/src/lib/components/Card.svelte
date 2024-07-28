@@ -60,6 +60,7 @@
       })
       const data = await response.json();
       if(data){
+        $user.currentSkin = skinId;
         console.log("Skin changed successfully");
       }else{
         console.log("Issue changing skin");
