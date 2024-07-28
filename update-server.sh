@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Pull in the latest changes
+git pull
+
 # Rebuild the frontend
 cd frontend
 npm install
