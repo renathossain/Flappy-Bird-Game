@@ -55,7 +55,7 @@
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: "115552404743840019755",
+          userId: $user.id,
           skinId: skinId,
         }),
       });

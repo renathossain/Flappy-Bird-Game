@@ -14,9 +14,8 @@
 
     async function getSkins(cursor: number | null, action: string | null) {
         if ($user) {
-        console.log("hello")
             const res = await fetch(
-                `/api/skin/?cursor=${cursor}&action=${action}&userId=115552404743840019755`,
+                `/api/skin/?cursor=${cursor}&action=${action}&userId=${$user.id}`,
             );
             const data = await res.json();
             skins = data.data.map((skin: any) => {
