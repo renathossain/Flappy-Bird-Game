@@ -68,7 +68,7 @@ stripeRouter.get('/success', async (req, res) => {
         skinId: metadata.skinId,
       }
     });
-    return res.status(200).json({ message: 'Success payment' });
+    res.redirect(`${process.env.FRONTEND_URL}/store`);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -80,7 +80,7 @@ stripeRouter.post('/webhook', express.raw({ type: 'application/json' }), async (
   const sig = req.headers['stripe-signature'];
   let event;
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, "whsec_771d739871c20f698b80dd740452fc67098a4c63b038f3c1ac1f2741c4ffcd07");
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (error) {
     res.status(400).send(`Webhook Error: ${error.message}`);
     return;

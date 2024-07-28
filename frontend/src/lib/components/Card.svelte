@@ -24,7 +24,7 @@
     price: number,
     currency: string,
   ) {
-    if ($user) {
+    //if ($user) {
       const response = await fetch(`/api/stripe/charge`, {
         method: "POST",
         headers: {
@@ -33,7 +33,7 @@
         body: JSON.stringify({
           price: price,
           currency: currency,
-          userId: $user.id,
+          userId: "115552404743840019755",
           skinId: skinId,
         }),
       });
@@ -43,7 +43,7 @@
       } else {
         console.log("Issue creating Stripe payment process", data.error);
       }
-    }
+    //}
   }
 
   async function handleUseSkin(skinId: number) {

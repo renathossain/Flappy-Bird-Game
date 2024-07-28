@@ -12,9 +12,9 @@
     let limit = 5;
     
     async function getSkins(cursor: number | null, action: string | null) {
-        if ($user) {
+       // if ($user) {
             const res = await fetch(
-                `/api/skin/?cursor=${cursor}&action=${action}&userId=${$user.id}`,
+                `/api/skin/?cursor=${cursor}&action=${action}&userId=115552404743840019755`,
             );
             const data = await res.json();
             skins = data.data.map((skin: any) => {
@@ -27,7 +27,7 @@
             });
             prevCursor = data.prev;
             nextCursor = data.next;
-        }
+       //}
     }
 
     function handleNext() {
@@ -45,7 +45,6 @@
 <main>
     <div class="header">
         <Button text="Main" link="/"></Button>
-        <!-- maybe needs registration because users can do /store and get to this route without being registered -->
         <Button text="Sign Out" link="/api/auth/logout"></Button>
     </div>
     <div class="container">
@@ -80,20 +79,13 @@
         top: 20px;
         right: 20px;
     }
-    .container {
-        width: 90vw;
-        height: 80vh;
-        margin: 20px;
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-    }
     .skins {
         margin-bottom: 20px;
         flex: auto;
-        display: flex;
+        display: grid;
         column-gap: 20px;
-    }
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }   
     .buttons-pagination {
         display: flex;
         justify-content: space-between;
@@ -103,13 +95,25 @@
         padding: 0 20px;
         width: 85vw;
     }
+    .container {
+        width: 90vw;
+        height: 80vh;
+        margin: 20px;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
     .button-pag {
         background-color: yellow;
         font-family: "RetroGaming", sans-serif;
         font-size: 20px;
         cursor: pointer;
     }
+
     .next-button {
         margin-left: auto;
     }
+
 </style>
