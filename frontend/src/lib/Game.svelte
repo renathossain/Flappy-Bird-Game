@@ -390,7 +390,8 @@
     });
 
     const container = document.getElementById("container");
-    container?.addEventListener("click", () => {
+
+    const handleTap = () => {
       if (!gameRunning && !gameOver) {
         // Start game for single-player
         gameRunning = true;
@@ -408,6 +409,12 @@
       if (!gameRunning && gameOver) {
         window.location.reload();
       }
+    };
+
+    container?.addEventListener("click", handleTap);
+    container?.addEventListener("touchstart", (e) => {
+      e.preventDefault(); // Prevent default touch behavior
+      handleTap();
     });
 
     onDestroy(() => {
