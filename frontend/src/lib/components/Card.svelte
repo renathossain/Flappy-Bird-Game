@@ -19,7 +19,7 @@
   let stripe;
 
   onMount(async () => {
-    stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+    stripe = await loadStripe(import.meta.env.STRIPE_PUBLIC_KEY);
   });
 
   async function handlePurchase(

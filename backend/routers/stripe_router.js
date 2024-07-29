@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { PurchasedSkins } from "../models/users.js";
 import { isLoggedIn } from "../middleware/auth.js";
+import express from "express";
 
 //Stripe
 //https://github.com/stripe/stripe-node
@@ -57,17 +58,18 @@ stripeRouter.get('/success', isLoggedIn, async (req, res) => {
   const session_id = req.query.session_id;
   try {
     const checkout_session = await stripe.checkout.sessions.retrieve(session_id);
-    const metadata = checkout_session.metadata;
-    await PurchasedSkins.findOrCreate({
-      where: {
-        userId: metadata.userId,
-        skinId: metadata.skinId,
-      },
-      defaults: {
-        userId: metadata.userId,
-        skinId: metadata.skinId,
-      }
-    });
+    console.log("Success: STRIPE");
+    // const metadata = checkout_session.metadata;
+    // await PurchasedSkins.findOrCreate({
+    //   where: {
+    //     userId: metadata.userId,
+    //     skinId: metadata.skinId,
+    //   },
+    //   defaults: {
+    //     userId: metadata.userId,
+    //     skinId: metadata.skinId,
+    //   }
+    // });
     res.redirect(`${process.env.FRONTEND_URL}/store`);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -77,13 +79,13 @@ stripeRouter.get('/success', isLoggedIn, async (req, res) => {
 
 stripeRouter.post('/webhook', isLoggedIn, express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
-  // console.log(sig)
+  console.log(sig)
   let event;
   try {
     //in the dotenv file
     event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET_KEY);
   } catch (error) {
-    // console.log(error.message)
+    console.log(error.message)
     res.status(400).send(`Webhook Error: ${error.message}`);
     return;
   }
