@@ -48,7 +48,7 @@
   }
 
   async function handleUseSkin(skinId: number) {
-   if ($user) {
+    if ($user) {
       const response = await fetch(`/api/skin/change`, {
         method: "PATCH",
         headers: {
@@ -60,11 +60,10 @@
         }),
       });
       const data = await response.json();
-      if(data){
+      if (data) {
         //the change was sucessful in the db
-        alert("Skin changed successfully!");
-        window.location.href = "/";
-        }else {
+        currentSkinNumber = skinId;
+      } else {
         console.log("Issue changing skin");
       }
     }
@@ -82,11 +81,15 @@
     <p>Price: ${price}</p>
     {#if purchased}
       {#if currentSkinNumber === id}
-      <button id={`current-skin-button-${id}`} class="arcade-button current">Current</button>
+        <button id={`current-skin-button-${id}`} class="arcade-button current"
+          >Current</button
+        >
       {:else}
-      <button id={`use-skin-button-${id}`} class="arcade-button" on:click={() => handleUseSkin(id)}
-        >Use Skin</button
-      >
+        <button
+          id={`use-skin-button-${id}`}
+          class="arcade-button"
+          on:click={() => handleUseSkin(id)}>Use Skin</button
+        >
       {/if}
     {:else}
       <button
