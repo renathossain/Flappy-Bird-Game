@@ -27,7 +27,6 @@ const PORT = 3000;
 export const app = express();
 
 
-app.use(bodyParser.json());
 
 // Serve static files
 const __filename = fileURLToPath(import.meta.url);
@@ -70,13 +69,25 @@ const startServer = async () => {
     // Passport initialization
     app.use(passport.initialize());
     app.use(passport.session());
-
+    
+    //this fixes webhook
+    app.use(
+      bodyParser.json({
+          verify: function(req, res, buf) {
+              req.rawBody = buf;
+          }
+      })
+    );
+    
+    app.use(bodyParser.json());
+    //stripe router needs to bere
+    app.use("/api/stripe", stripeRouter);
     // Routes
     app.use("/", authRouter);
     app.use("/", userRouter);
     app.use("/", lobbyRouter);
     app.use("/api/skin", skinRouter);
-    app.use("/api/stripe", stripeRouter);
+    
     app.use("/api/purchase", purchaseRouter);
 
     // Start server and initialize Socket.IO

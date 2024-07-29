@@ -18,7 +18,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2024-06-20',
 });
 
-// isLoggedin added - testing required
+
 stripeRouter.post('/charge', isLoggedIn, async (req, res) => {
   const price = req.body.price;
   const currency = req.body.currency;
@@ -78,12 +78,14 @@ stripeRouter.get('/success', isLoggedIn, async (req, res) => {
 
 
 stripeRouter.post('/webhook', isLoggedIn, express.raw({ type: 'application/json' }), async (req, res) => {
-  const endpointSecret = "whsec_771d739871c20f698b80dd740452fc67098a4c63b038f3c1ac1f2741c4ffcd07";
   const sig = req.headers['stripe-signature'];
+  // console.log(sig)
   let event;
   try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    //in the dotenv file
+    event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET_KEY);
   } catch (error) {
+    // console.log(error.message)
     res.status(400).send(`Webhook Error: ${error.message}`);
     return;
   }
@@ -94,16 +96,16 @@ stripeRouter.post('/webhook', isLoggedIn, express.raw({ type: 'application/json'
       const session = event.data.object;
       const metadata = session.metadata;
       try {
-        // await PurchasedSkins.findOrCreate({
-        //   where: {
-        //     userId: metadata.userId,
-        //     skinId: metadata.skinId,
-        //   },
-        //   defaults: {
-        //     userId: metadata.userId,
-        //     skinId: metadata.skinId,
-        //   }
-        // });
+        await PurchasedSkins.findOrCreate({
+          where: {
+            userId: metadata.userId,
+            skinId: metadata.skinId,
+          },
+          defaults: {
+            userId: metadata.userId,
+            skinId: metadata.skinId,
+          }
+        });
       } catch (error) {
         console.error('Error saving purchase', error.message);
       }

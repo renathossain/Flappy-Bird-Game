@@ -8,7 +8,6 @@ import { isLoggedIn } from "../middleware/auth.js";
 
 export const skinRouter = Router();
 
-// isLoggedin added - testing required
 skinRouter.get("/", isLoggedIn, async (req, res, next) => {
     try{
         const {cursor, limit, action, userId} = req.query;
@@ -115,23 +114,3 @@ skinRouter.patch("/change", isLoggedIn, async (req, res, next) => {
 
 });
 
-
-
-//get users current skin if exists
-// skinRouter.get("/:id", async (req, res, next) => {
-//     try {
-//         const userId = req.params.id;
-//         const user = await User.findOne({
-//             where: { id: userId },
-//         });
-//         if (!user) {
-//             return res.status(404).json({ error: "User not found" });
-//         }
-//         return res.json({
-//             currentSkin: user.currentSkin,
-//         });
-//     } catch (err) {
-//         return res.status(400).json({ error: err.message });
-//     }
-// }
-// );
