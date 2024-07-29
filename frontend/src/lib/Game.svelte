@@ -19,19 +19,21 @@
 
   onMount(async () => {
     try {
-      const res = await fetch("/api/user");
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      const data = await res.json();
+      if (!socket) {
+        const res = await fetch("/api/user");
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
 
-      if (data) {
-        playerData = {
-          userId: data.user.id,
-          givenName: data.user.givenName,
-          currentSkin: data.user.currentSkin,
-        };
-        players = [playerData];
+        if (data) {
+          playerData = {
+            userId: data.user.id,
+            givenName: data.user.givenName,
+            currentSkin: data.user.currentSkin,
+          };
+          players = [playerData];
+        }
       }
     } catch (error) {
       console.error("Failed to fetch user data:", error);

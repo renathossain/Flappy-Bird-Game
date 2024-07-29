@@ -10,7 +10,6 @@
     let prevCursor: number | null = null;
     let nextCursor: number | null = null;
     let currentSkin: number = 1;
-    let limit = 5;
 
     async function getSkins(cursor: number | null, action: string | null) {
         if ($user) {
@@ -57,7 +56,7 @@
                     price={skin.price}
                     image={skin.imagePath}
                     purchased={skin.purchased}
-                    currentSkinNumber={currentSkin}
+                    bind:currentSkinNumber={currentSkin}
                 ></Card>
             {/each}
         </div>
@@ -127,17 +126,16 @@
 
     /* larger screens */
 
-    @media (min-width: 1200px) { 
-    .skins {
-        grid-template-columns: repeat(5, 1fr);
+    @media (min-width: 1200px) {
+        .skins {
+            grid-template-columns: repeat(5, 1fr);
+        }
     }
-}
 
-/* smaller screens */
-@media (max-width: 1199px) {
-    .skins {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+    /* smaller screens */
+    @media (max-width: 1199px) {
+        .skins {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
     }
-}
-
 </style>
