@@ -83,7 +83,7 @@
     <img src={image} alt={"/assets/picture.png"} />
   </div>
   <div class="arcade-price">
-    <p>Price: ${price} USD</p>
+    <p>Price: ${price} CAD</p>
     {#if purchased}
       {#if currentSkinNumber === id}
         <button id={`current-skin-button-${id}`} class="arcade-button current"
@@ -100,7 +100,7 @@
       <button
         id={`purchase-button-${id}`}
         class="arcade-button"
-        on:click={() => handlePurchase(id, price, "usd")}>Purchase</button
+        on:click={() => handlePurchase(id, price, "cad")}>Purchase</button
       >
     {/if}
   </div>

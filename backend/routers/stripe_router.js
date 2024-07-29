@@ -58,7 +58,6 @@ stripeRouter.get('/success', isLoggedIn, async (req, res) => {
   const session_id = req.query.session_id;
   try {
     const checkout_session = await stripe.checkout.sessions.retrieve(session_id);
-    console.log("Success: STRIPE");
     const metadata = checkout_session.metadata;
     await PurchasedSkins.findOrCreate({
       where: {
