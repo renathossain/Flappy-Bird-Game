@@ -16,6 +16,7 @@
 - `GRANT CREATE ON SCHEMA public TO flappy_user;`
 - `GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO flappy_user;`
 - `GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO flappy_user;`
+- `GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO flappy_user;`
 - `psql -U flappy_user -h localhost -d flappy` - Login to flappy_user and open flappy database
 - Install NVM (Node Version Manager): https://github.com/nvm-sh/nvm
 - `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash`
@@ -45,3 +46,4 @@
 
 # Update the server with new changes
 - `./update-server.sh`
+- `pm2 logs backend` - Check status of backend
