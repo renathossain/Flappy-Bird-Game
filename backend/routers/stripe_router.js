@@ -82,7 +82,7 @@ stripeRouter.post('/webhook', isLoggedIn, express.raw({ type: 'application/json'
   let event;
   try {
     //in the dotenv file
-    event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET_KEY);
+    event = stripe.webhooks.constructEvent(req.rawBody, sig, "whsec_j8k2XlCJ3OxzNgFTgL6M61lFNFUNCLP2");
   } catch (error) {
     console.log(error.message)
     res.status(400).send(`Webhook Error: ${error.message}`);
