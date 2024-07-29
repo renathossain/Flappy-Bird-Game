@@ -139,6 +139,22 @@ export default function initializeSocket(server) {
       io.to(lobbySocket).emit(`jump-${userId}`);
     });
 
+    socket.on("change-skin", async (userId) => {
+      // Find the lobby of the user
+      const lobbyUser = await LobbyUser.findOne({
+        where: { userId }
+      });
+
+      if (lobbyUser) {
+        // Obtain the lobby's socketId
+        const lobby = await Lobby.findByPk(lobbyUser.lobbyId);
+        if (lobby) {
+          // Update the player list
+          io.to(lobby.socketId).emit(`lobby-send-players`, await getLobbyPlayers(lobby.id));
+        }
+      }
+    });
+
     socket.on("disconnect", async () => {
       console.log(`Client disconnected: ${socket.id}`);
       try {

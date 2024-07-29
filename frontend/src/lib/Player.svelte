@@ -2,6 +2,7 @@
   import BigButton from "./components/BigButton.svelte";
   import Button from "./components/Button.svelte";
   import Unauthorized from "./Unauthorized.svelte";
+  import Store from "./Store.svelte";
   import { user, code } from "../store";
   import { onMount } from "svelte";
   import io, { Socket } from "socket.io-client";
@@ -9,6 +10,7 @@
   let socket: Socket;
   let jumpFunction = () => {};
   let lobbySocket: string = "";
+  let pageState = "player";
 
   const setupJumpFunction = () => {
     jumpFunction = () => {
@@ -19,6 +21,10 @@
         });
       }
     };
+  };
+
+  const changeSkinFunction = () => {
+    pageState = "store";
   };
 
   onMount(() => {
@@ -53,15 +59,20 @@
   });
 </script>
 
-{#if lobbySocket != ""}
+{#if lobbySocket != "" && pageState === "player"}
   <div class="container">
     <div class="big-button-container">
       <BigButton text="Tap\Press Space To Fly" onClick={jumpFunction} />
     </div>
     <div class="controls">
+      {#if $user}
+        <Button text="Change Skin" onClick={changeSkinFunction} />
+      {/if}
       <Button text="Leave the Game" link="/" />
     </div>
   </div>
+{:else if lobbySocket != "" && pageState === "store"}
+  <Store bind:pageState {socket} />
 {:else}
   <Unauthorized />
 {/if}

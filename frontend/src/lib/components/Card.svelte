@@ -7,12 +7,14 @@
   import { loadStripe } from "@stripe/stripe-js";
   import { onMount } from "svelte";
   import { user } from "../../store";
+  import { Socket } from "socket.io-client";
 
   export let id: number;
   export let price: number;
   export let image: string;
   export let purchased: boolean;
   export let currentSkinNumber: number;
+  export let socket: Socket | null = null;
 
   let stripe;
 
@@ -63,6 +65,9 @@
       if (data) {
         //the change was sucessful in the db
         currentSkinNumber = skinId;
+        if (socket) {
+          socket.emit("change-skin", $user.id);
+        }
       } else {
         console.log("Issue changing skin");
       }
