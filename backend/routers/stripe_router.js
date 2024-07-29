@@ -78,7 +78,7 @@ stripeRouter.get('/success', isLoggedIn, async (req, res) => {
 
 stripeRouter.post('/webhook', isLoggedIn, express.raw({ type: 'application/json' }), async (req, res) => {
   const sig = req.headers['stripe-signature'];
-  console.log(sig)
+  console.log(sig);
   let event;
   try {
     //in the dotenv file
