@@ -13,7 +13,7 @@ import express from "express";
 export const stripeRouter = Router();
 dotenv.config();
 
-const stripe = new Stripe("sk_test_51PggsJLePA6xKtxQX9LJez3MBtVtOZAsSTVT4imDIAhlPjRCJ1iNzg8DMImC66ErKPSibQyR73RXWNi45wUvLkLj00DZ7j54f1", {
+const stripe = new Stripe(`${process.env.STRIPE_SECRET_KEY}`, {
   apiVersion: '2024-06-20',
 });
 
