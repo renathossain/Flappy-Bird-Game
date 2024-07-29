@@ -59,17 +59,17 @@ stripeRouter.get('/success', isLoggedIn, async (req, res) => {
   try {
     const checkout_session = await stripe.checkout.sessions.retrieve(session_id);
     console.log("Success: STRIPE");
-    // const metadata = checkout_session.metadata;
-    // await PurchasedSkins.findOrCreate({
-    //   where: {
-    //     userId: metadata.userId,
-    //     skinId: metadata.skinId,
-    //   },
-    //   defaults: {
-    //     userId: metadata.userId,
-    //     skinId: metadata.skinId,
-    //   }
-    // });
+    const metadata = checkout_session.metadata;
+    await PurchasedSkins.findOrCreate({
+      where: {
+        userId: metadata.userId,
+        skinId: metadata.skinId,
+      },
+      defaults: {
+        userId: metadata.userId,
+        skinId: metadata.skinId,
+      }
+    });
     res.redirect(`${process.env.FRONTEND_URL}/store`);
   } catch (error) {
     res.status(500).json({ error: error.message });
