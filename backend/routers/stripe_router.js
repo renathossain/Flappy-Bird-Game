@@ -16,7 +16,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2024-06-20',
 });
 
-// isLoggedin added - testing required
+
 stripeRouter.post('/charge', isLoggedIn, async (req, res) => {
   const price = req.body.price;
   const currency = req.body.currency;
@@ -73,3 +73,43 @@ stripeRouter.get('/success', isLoggedIn, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+
+stripeRouter.post('/webhook', isLoggedIn, express.raw({ type: 'application/json' }), async (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  // console.log(sig)
+  let event;
+  try {
+    //in the dotenv file
+    event = stripe.webhooks.constructEvent(req.rawBody, sig, process.env.STRIPE_WEBHOOK_SECRET_KEY);
+  } catch (error) {
+    // console.log(error.message)
+    res.status(400).send(`Webhook Error: ${error.message}`);
+    return;
+  }
+
+  switch (event.type) {
+    //copied from the stripe api documentation
+    case 'checkout.session.completed':
+      const session = event.data.object;
+      const metadata = session.metadata;
+      try {
+        await PurchasedSkins.findOrCreate({
+          where: {
+            userId: metadata.userId,
+            skinId: metadata.skinId,
+          },
+          defaults: {
+            userId: metadata.userId,
+            skinId: metadata.skinId,
+          }
+        });
+      } catch (error) {
+        console.error('Error saving purchase', error.message);
+      }
+      break;
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+  res.status(200).send('Received');
+})

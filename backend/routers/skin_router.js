@@ -8,7 +8,6 @@ import { isLoggedIn } from "../middleware/auth.js";
 
 export const skinRouter = Router();
 
-// isLoggedin added - testing required
 skinRouter.get("/", isLoggedIn, async (req, res, next) => {
     try {
         const { cursor, limit, action, userId } = req.query;
@@ -114,3 +113,4 @@ skinRouter.patch("/change", isLoggedIn, async (req, res, next) => {
     }
 
 });
+
