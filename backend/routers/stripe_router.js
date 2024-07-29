@@ -1,9 +1,7 @@
 import { Router } from "express";
 import Stripe from "stripe";
 import dotenv from "dotenv";
-import bodyParser from "body-parser";
 import { PurchasedSkins } from "../models/users.js";
-import express from "express";
 import { isLoggedIn } from "../middleware/auth.js";
 
 //Stripe
@@ -41,7 +39,7 @@ stripeRouter.post('/charge', isLoggedIn, async (req, res) => {
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: 'http://localhost:3000/api/stripe/success?session_id={CHECKOUT_SESSION_ID}',
+      success_url: process.env.STRIPE_SUCCESS_URL,
       cancel_url: `${process.env.FRONTEND_URL}/store`,
       metadata: {
         skinId: skinId,
@@ -75,41 +73,3 @@ stripeRouter.get('/success', isLoggedIn, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
-stripeRouter.post('/webhook', isLoggedIn, express.raw({ type: 'application/json' }), async (req, res) => {
-  const endpointSecret = "whsec_771d739871c20f698b80dd740452fc67098a4c63b038f3c1ac1f2741c4ffcd07";
-  const sig = req.headers['stripe-signature'];
-  let event;
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-  } catch (error) {
-    res.status(400).send(`Webhook Error: ${error.message}`);
-    return;
-  }
-
-  switch (event.type) {
-    //copied from the stripe api documentation
-    case 'checkout.session.completed':
-      const session = event.data.object;
-      const metadata = session.metadata;
-      try {
-        // await PurchasedSkins.findOrCreate({
-        //   where: {
-        //     userId: metadata.userId,
-        //     skinId: metadata.skinId,
-        //   },
-        //   defaults: {
-        //     userId: metadata.userId,
-        //     skinId: metadata.skinId,
-        //   }
-        // });
-      } catch (error) {
-        console.error('Error saving purchase', error.message);
-      }
-      break;
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  }
-  res.status(200).send('Received');
-})
